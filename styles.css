@@ -33,6 +33,10 @@ body {
   margin: 0;
   padding: 0;
 }
+body { background: red !important; }
+
+
+
 
 /*body { */
  /* background: url('your-image.jpg') center/cover no-repeat; */
