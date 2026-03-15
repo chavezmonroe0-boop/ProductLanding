@@ -40,10 +40,16 @@ async function enumerateCameras() { try { const devices = await navigator.mediaD
 
 async function startCamera() {
   if (!navigator.mediaDevices?.getUserMedia) { alert('Camera API not available in this browser.'); return; }
-  try {
-    stream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: cameraSelect.value?{exact:cameraSelect.value}:undefined, facingMode:'environment', width:{ideal:1280}, height:{ideal:720} }, audio:false });
-    video.srcObject = stream; await video.play(); scanning = true; scanLoop();
-  } catch(err) { alert('Unable to start camera: ' + err.message); }
+
+window.addEventListener('DOMContentLoaded', async ()=>{
+  await loadCatalog();
+  await enumerateCameras();
+});
+  
+ // try {
+   // stream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: cameraSelect.value?{exact:cameraSelect.value}:undefined, facingMode:'environment', width:{ideal:1280}, height:{ideal:720} }, audio:false });
+    //video.srcObject = stream; await video.play(); scanning = true; scanLoop();
+ // } catch(err) { alert('Unable to start camera: ' + err.message); }
 }
 function stopCamera() { scanning=false; if (rafId) cancelAnimationFrame(rafId); if (stream) { stream.getTracks().forEach(t=>t.stop()); stream=null; } }
 startBtn.addEventListener('click', startCamera); stopBtn.addEventListener('click', stopCamera);
