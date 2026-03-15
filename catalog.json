@@ -1,0 +1,12 @@
+{
+  "items": [
+    {
+      "gtin": "00012345678905",
+      "style": "K87",
+      "title": "K87 Workwear Pocket Short-Sleeve T-Shirt",
+      "color": "Carhartt Brown",
+      "size": "L",
+      "image": "assets/k87_carhartt_brown.jpg"
+    }
+  ]
+}
