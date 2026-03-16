@@ -28,6 +28,45 @@ html, body {
   opacity: 0.9;
 }
 
+.hero-text {
+  background: #8C6239; /* Carhartt Brown */
+  color: white;
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.hero-text h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.hero-text p {
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 body {
   background: #8C6239;
   margin: 0;
