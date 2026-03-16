@@ -78,6 +78,11 @@ body {
   background: url('backgroundlp.png') center/cover no-repeat;
 }
 
+.hero-image {
+  height: 50vh; /* top half of the screen */
+  background: url('backgroundlp.png') center/cover no-repeat;
+}
+
 
 
 
