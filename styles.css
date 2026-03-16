@@ -34,7 +34,10 @@ body {
   padding: 0;
 }
 
-
+/*landing_page_hero_landing_image_added */
+body {
+  background: url('backgroundlp.png') center/cover no-repeat;
+}
 
 
 
