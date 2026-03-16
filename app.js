@@ -99,9 +99,9 @@ hidClearBtn?.addEventListener('click', ()=>{ hidInput.value=''; decodedRawHID.te
 
 function parseHID(raw){ const normalized = raw.replace(/<GS>/g, String.fromCharCode(29)); const parsed = parseGS1(normalized); decodedRawHID.textContent = normalized.replace(/\u001d/g,'<GS>'); renderTableGeneric(parsed, normalized, resultTableHID); tryShowProductGeneric(parsed, productCardHID, productImageHID, productTitleHID, productMetaHID); }
 
-/window.addEventListener('DOMContentLoaded', async ()=>{ await loadCatalog(); try{ await navigator.mediaDevices.getUserMedia({video:true}); }catch(e){} await enumerateCameras(); });
 
-window.addEventListener('DOMContentLoaded', async ()=>{
+// Load catalog and camera list on page load (NO CAMERA START)
+window.addEventListener('DOMContentLoaded', async () => {
   await loadCatalog();
   await enumerateCameras();
 });
