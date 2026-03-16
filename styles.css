@@ -115,6 +115,19 @@ body {
 .menu a { text-decoration: none; color: #111; font-weight: 600; font-size: 14px; white-space: nowrap; }
 .menu .scan-link { color: #0066cc; border-left: 1px solid #ddd; padding-left: 16px; }
 
+
+#scannerModal,
+#scannerModal * {
+  color: black !important;
+}
+
+
+
+
+
+
+
+
 /* Modal */
 .modal { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: none; align-items: center; justify-content: center; z-index: 100; }
 .modal[aria-hidden="false"] { display: flex; }
