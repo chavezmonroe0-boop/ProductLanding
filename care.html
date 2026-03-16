@@ -26,23 +26,32 @@
       <a id="scan-link" class="scan-link" href="#">SCAN BARCODE</a>
     </nav>
   </header>
-  
-<main class="hero">
-  <h1>We serve and protect all hardworking people by building durable products.</h1>
-  <p>Congratulations on Purchasing your Authentic Carhartt product.</p>
-</main>
 
-<section class="info-links">
-  <ul>
-    <li><a href="index.html">Back to Product Page</a></li>
-    <li><a href="warranty.html">Warranty & Product Guarantee</a></li>
-    <li><a href="materials.html">Materials & Fabric Details</a></li>
-    <li><a href="sizing.html">Sizing & Fit Guide</a></li>
-    <li><a href="safety.html">Safety & Compliance Information</a></li>
-    <li><a href="sustainability.html">Sustainability & Manufacturing</a></li>
-    <li><a href="contact.html">Customer Support</a></li>
-  </ul>
-</section>
+  <main>
+
+    <!-- TOP HALF IMAGE -->
+    <section class="hero-image"></section>
+
+    <!-- BOTTOM HALF TEXT -->
+    <section class="hero-text">
+      <h1>Congratulations on Purchasing your Authentic Carhartt Apparel.</h1>
+      <p>Use the links below to find out more about your Carhartt product.</p>
+
+      <ul class="info-links">
+        <li><a href="care.html">Garment Care Instructions</a></li>
+        <li><a href="warranty.html">Warranty & Product Guarantee</a></li>
+        <li><a href="materials.html">Materials & Fabric Details</a></li>
+        <li><a href="sizing.html">Sizing & Fit Guide</a></li>
+        <li><a href="safety.html">Safety & Compliance Information</a></li>
+        <li><a href="sustainability.html">Sustainability & Manufacturing</a></li>
+        <li><a href="contact.html">Customer Support</a></li>
+      </ul>
+    </section>
+
+  </main>
+</body>
+
+
 
 
 
@@ -87,19 +96,28 @@
               </div>
               <p class="helper">Tip: Hold steady, fill the frame, and light the code evenly.</p>
             </div>
-            <div class="result-col">
-              <h3>Congrats</h3>
-              <div id="decodedRaw" class="raw"></div>
-              <table class="result-table" id="resultTable"></table>
-              <div id="productCard" class="product-card hidden">
-                <img id="productImage" alt="Garment" />
-                <div class="product-meta">
-                  <div id="productTitle" class="title"></div>
-                  <div id="productMeta" class="meta"></div>
-                </div>
-              </div>
+
+            <div class="results-layout">
+              <div class="results-left">
+                <div id="decodedRaw"></div>
+                <table id="resultTable"></table>
+            </div>
+
+            <div class="results-right">
+              <div id="productCard" class="hidden">
+                <img id="productImage" src="" alt="">
+                <h3 id="productTitle"></h3>
+                <p id="productMeta"></p>
+             </div>
             </div>
           </div>
+
+
+
+            
+
+
+          
         </section>
 
         <section id="hidTab" class="tabpane">
