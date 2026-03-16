@@ -185,6 +185,19 @@ body {
   padding: 4px;
 }
 
+#scannerModal button {
+  background: #f5f5f5 !important;
+  color: #1A1A1A !important;
+  border: 2px solid #1A1A1A;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#scannerModal button:hover {
+  background: #e0e0e0 !important;
+}
 
 
 
