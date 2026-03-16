@@ -36,7 +36,7 @@ const productMeta = document.getElementById('productMeta');
 let stream = null; let scanning = false; let rafId = null; let catalog = { items: [] };
 
 async function loadCatalog() { try { const r = await fetch('catalog.json'); if (r.ok) catalog = await r.json(); } catch(e) {} }
-//async function enumerateCameras() { try { const devices = await navigator.mediaDevices.enumerateDevices(); const vids = devices.filter(d=>d.kind==='videoinput'); cameraSelect.innerHTML=''; for (const d of vids) { const o=document.createElement('option'); o.value=d.deviceId; o.textContent=d.label || `Camera ${cameraSelect.length+1}`; cameraSelect.appendChild(o);} } catch(e){} }
+async function enumerateCameras() { try { const devices = await navigator.mediaDevices.enumerateDevices(); const vids = devices.filter(d=>d.kind==='videoinput'); cameraSelect.innerHTML=''; for (const d of vids) { const o=document.createElement('option'); o.value=d.deviceId; o.textContent=d.label || `Camera ${cameraSelect.length+1}`; cameraSelect.appendChild(o);} } catch(e){} }
 
 async function startCamera() {
   if (!navigator.mediaDevices?.getUserMedia) { alert('Camera API not available in this browser.'); return; }
