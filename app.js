@@ -38,19 +38,36 @@ let stream = null; let scanning = false; let rafId = null; let catalog = { items
 async function loadCatalog() { try { const r = await fetch('catalog.json'); if (r.ok) catalog = await r.json(); } catch(e) {} }
 async function enumerateCameras() { try { const devices = await navigator.mediaDevices.enumerateDevices(); const vids = devices.filter(d=>d.kind==='videoinput'); cameraSelect.innerHTML=''; for (const d of vids) { const o=document.createElement('option'); o.value=d.deviceId; o.textContent=d.label || `Camera ${cameraSelect.length+1}`; cameraSelect.appendChild(o);} } catch(e){} }
 
-async function startCamera() {
-  if (!navigator.mediaDevices?.getUserMedia) { alert('Camera API not available in this browser.'); return; }
 
-window.addEventListener('DOMContentLoaded', async ()=>{
-  await loadCatalog();
-  await enumerateCameras();
-});
-  
- // try {
-   // stream = await navigator.mediaDevices.getUserMedia({ video: { deviceId: cameraSelect.value?{exact:cameraSelect.value}:undefined, facingMode:'environment', width:{ideal:1280}, height:{ideal:720} }, audio:false });
-    //video.srcObject = stream; await video.play(); scanning = true; scanLoop();
- // } catch(err) { alert('Unable to start camera: ' + err.message); }
+async function startCamera() {
+  if (!navigator.mediaDevices?.getUserMedia) {
+    alert('Camera API not available in this browser.');
+    return;
+  }
+
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        deviceId: cameraSelect.value ? { exact: cameraSelect.value } : undefined,
+        facingMode: 'environment',
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    });
+
+    video.srcObject = stream;
+    await video.play();
+    scanning = true;
+    scanLoop();
+
+  } catch (err) {
+    alert('Unable to start camera: ' + err.message);
+  }
 }
+
+
+
 function stopCamera() { scanning=false; if (rafId) cancelAnimationFrame(rafId); if (stream) { stream.getTracks().forEach(t=>t.stop()); stream=null; } }
 startBtn.addEventListener('click', startCamera); stopBtn.addEventListener('click', stopCamera);
 
@@ -82,4 +99,21 @@ hidClearBtn?.addEventListener('click', ()=>{ hidInput.value=''; decodedRawHID.te
 
 function parseHID(raw){ const normalized = raw.replace(/<GS>/g, String.fromCharCode(29)); const parsed = parseGS1(normalized); decodedRawHID.textContent = normalized.replace(/\u001d/g,'<GS>'); renderTableGeneric(parsed, normalized, resultTableHID); tryShowProductGeneric(parsed, productCardHID, productImageHID, productTitleHID, productMetaHID); }
 
-window.addEventListener('DOMContentLoaded', async ()=>{ await loadCatalog(); try{ await navigator.mediaDevices.getUserMedia({video:true}); }catch(e){} await enumerateCameras(); });
+/window.addEventListener('DOMContentLoaded', async ()=>{ await loadCatalog(); try{ await navigator.mediaDevices.getUserMedia({video:true}); }catch(e){} await enumerateCameras(); });
+
+window.addEventListener('DOMContentLoaded', async ()=>{
+  await loadCatalog();
+  await enumerateCameras();
+});
+
+
+
+
+
+
+
+
+
+
+
+
