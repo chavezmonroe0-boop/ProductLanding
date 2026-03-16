@@ -47,26 +47,6 @@ html, body {
   margin: 0 auto;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 body {
   background: #8C6239;
   margin: 0;
@@ -88,6 +68,7 @@ body {
   padding: 0;
   margin: 30px auto 0;
   max-width: 400px;
+  text-align: left;
 }
 
 .info-links li {
