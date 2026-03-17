@@ -1,5 +1,6 @@
 // Minimal GS1 parser for common AIs used in apparel
 const GS = String.fromCharCode(29);
+
 const AI_TABLE = [
   { id: '01', fixed: 14, key: 'gtin' },
   { id: '17', fixed: 6,  key: 'expiry' },
@@ -8,12 +9,91 @@ const AI_TABLE = [
   { id: '240', fixed: null, max: 30, key: 'style' },
   { id: '241', fixed: null, max: 30 },
   { id: '400', fixed: null, max: 30, key: 'po' },
-  { id: '422', fixed: 3,  key: 'coo' }
+  { id: '422', fixed: 3,  key: 'coo' }   // Country of Origin (numeric)
 ];
+
 const AI_BY_ID = Object.fromEntries(AI_TABLE.map(a => [a.id, a]));
-function parseGS1(input){ if(!input) return {}; const s = input.replace(/\u001d/g, GS); let i=0; const out={}; const len=s.length; while(i<len){ let ai=null; for(const w of [4,3,2]){ const cand=s.substr(i,w); if(AI_BY_ID[cand]){ ai=cand; i+=w; break; } } if(!ai){ i+=1; continue; } const def=AI_BY_ID[ai]; if(def.fixed!=null){ const value=s.substr(i, def.fixed); i+=def.fixed; set(out,def,value); } else { const nextGS=s.indexOf(GS,i); let raw=(nextGS===-1? s.substring(i) : s.substring(i,nextGS)); if(def.max && raw.length>def.max) raw=raw.substring(0,def.max); i += raw.length + (nextGS===-1?0:1); set(out,def,raw); } } if(out.gtin) out.gtin = out.gtin.padStart(14,'0'); if(out.expiry && /^\d{6}$/.test(out.expiry)){ const yy=out.expiry.slice(0,2), mm=out.expiry.slice(2,4), dd=out.expiry.slice(4,6); out.expiry = `20${yy}-${mm}-${dd}`; } return out; }
-function set(out,def,val){ const key=def.key||def.id; out[key]=val; }
+
+function parseGS1(input) {
+  if (!input) return {};
+
+  const s = input.replace(/\u001d/g, GS);
+  let i = 0;
+  const out = {};
+  const len = s.length;
+
+  while (i < len) {
+    let ai = null;
+
+    // Try 4-digit, then 3-digit, then 2-digit AIs
+    for (const w of [4, 3, 2]) {
+      const cand = s.substr(i, w);
+      if (AI_BY_ID[cand]) {
+        ai = cand;
+        i += w;
+        break;
+      }
+    }
+
+    if (!ai) {
+      i += 1;
+      continue;
+    }
+
+    const def = AI_BY_ID[ai];
+
+    // === FIXED-LENGTH FIELDS ===
+    if (def.fixed != null) {
+      const value = s.substr(i, def.fixed);
+      i += def.fixed;
+
+      // === Country of Origin (AI 422) translation ===
+      if (ai === "422") {
+        const padded = value.padStart(3, "0");
+        out.coo = countryAlpha2ByNumeric[padded] || value;
+        continue; // Skip normal set()
+      }
+
+      set(out, def, value);
+    }
+
+    // === VARIABLE-LENGTH FIELDS ===
+    else {
+      const nextGS = s.indexOf(GS, i);
+      let raw = (nextGS === -1 ? s.substring(i) : s.substring(i, nextGS));
+
+      if (def.max && raw.length > def.max) {
+        raw = raw.substring(0, def.max);
+      }
+
+      i += raw.length + (nextGS === -1 ? 0 : 1);
+      set(out, def, raw);
+    }
+  }
+
+  // Normalize GTIN
+  if (out.gtin) {
+    out.gtin = out.gtin.padStart(14, '0');
+  }
+
+  // Convert YYMMDD → YYYY-MM-DD
+  if (out.expiry && /^\d{6}$/.test(out.expiry)) {
+    const yy = out.expiry.slice(0, 2);
+    const mm = out.expiry.slice(2, 4);
+    const dd = out.expiry.slice(4, 6);
+    out.expiry = `20${yy}-${mm}-${dd}`;
+  }
+
+  return out;
+}
+
+function set(out, def, val) {
+  const key = def.key || def.id;
+  out[key] = val;
+}
+
 window.parseGS1 = parseGS1;
+
 
 // === ISO 3166-1 numeric -> alpha-2 map for GS1 AI (422) Country of Origin ===
 const countryAlpha2ByNumeric = {
