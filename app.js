@@ -33,6 +33,38 @@ const productImage = document.getElementById('productImage');
 const productTitle = document.getElementById('productTitle');
 const productMeta = document.getElementById('productMeta');
 
+// === ISO 3166-1 numeric -> alpha-2 map for GS1 AI (422) Country of Origin ===
+// Add more as needed for your items.
+const countryAlpha2ByNumeric = {
+  "004": "AF","008": "AL","012": "DZ","016": "AS","031": "AZ","036": "AU","040": "AT","051": "AM",
+  "056": "BE","076": "BR","100": "BG","124": "CA","156": "CN","170": "CO","191": "HR","196": "CY",
+  "203": "CZ","208": "DK","233": "EE","246": "FI","250": "FR","268": "GE","276": "DE","344": "HK",
+  "348": "HU","356": "IN","360": "ID","364": "IR","368": "IQ","376": "IL","380": "IT","392": "JP",
+  "400": "JO","410": "KR","417": "KG","422": "LB","434": "LY","458": "MY","470": "MT","484": "MX",
+  "498": "MD","504": "MA","528": "NL","554": "NZ","566": "NG","579": "NO","586": "PK","604": "PE",
+  "608": "PH","616": "PL","620": "PT","634": "QA","643": "RU","682": "SA","702": "SG","703": "SK",
+  "704": "VN","710": "ZA","724": "ES","752": "SE","756": "CH","764": "TH","784": "AE","792": "TR",
+  "796": "TC","804": "UA","826": "GB","840": "US","858": "UY","860": "UZ","882": "WS","894": "ZM"
+};
+
+// Convert numeric like "156" to "CN (156)"; if unknown, show the number.
+// Expose on window so it's accessible anywhere.
+window.formatCOO = function(ai422) {
+  if (!ai422) return "";
+  const code = String(ai422).padStart(3, "0"); // normalize to 3 digits
+  const alpha2 = countryAlpha2ByNumeric[code];
+  return alpha2 ? `${alpha2} (${code})` : code;
+};
+
+
+
+
+
+
+
+
+
+
 let stream = null; let scanning = false; let rafId = null; let catalog = { items: [] };
 
 async function loadCatalog() { try { const r = await fetch('catalog.json'); if (r.ok) catalog = await r.json(); } catch(e) {} }
