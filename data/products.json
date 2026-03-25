@@ -13,7 +13,7 @@
       "care": "Machine wash warm with like colors. Non-Chlorine bleach when needed. Tumble dry medium, remove promptly",
       "COO": "Pakistan",
       "PO": "3510051489",
-      "Style": "K87 Brown Regular L",
+      "Style": "K87 Brown Regular Large",
       "Description": "Relaxed Fit Pocket Tee"
     }
   },
@@ -27,7 +27,10 @@
     "fields": {
       "materials": "75% cotton / 25% polyester (example)",
       "care": "Tumble dry low (example)",
-      "warranty": "1-year limited (example)"
+      "COO": "?",
+      "PO": "3510042476",
+      "Style": "100615 Black Regular Large",
+      "Description": "?"
     }
   }
 ]
