@@ -1,0 +1,103 @@
+// product-page.js
+// Populates a product page (e.g., K87.html) from data/products.json using ?id=...
+
+function getParam(name) {
+  return new URLSearchParams(window.location.search).get(name);
+}
+
+function currentFileName() {
+  const p = window.location.pathname;
+  return p.substring(p.lastIndexOf("/") + 1);
+}
+
+async function loadTable() {
+  // Primary location
+  const tryUrls = ["data/products.json", "products.json"];
+  let lastErr;
+
+  for (const url of tryUrls) {
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) continue;
+      const data = await res.json();
+      return Array.isArray(data) ? data : (data.items || []);
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+  throw lastErr || new Error("Could not load products table JSON.");
+}
+
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el && value != null) el.textContent = value;
+}
+
+function setHTML(id, value) {
+  const el = document.getElementById(id);
+  if (el && value != null) el.innerHTML = value;
+}
+
+function setSrc(id, value) {
+  const el = document.getElementById(id);
+  if (el && value) el.src = value;
+}
+
+function show(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.remove("hidden");
+}
+
+function showError(msg) {
+  const el = document.getElementById("pageError");
+  if (el) {
+    el.textContent = msg;
+    el.classList.remove("hidden");
+  } else {
+    console.error(msg);
+  }
+}
+
+function populate(record) {
+  // Basic
+  setText("productTitle", record.title);
+  setText("productMeta", record.meta);
+  setSrc("productImage", record.image);
+
+  // Optional: show GTIN/PO if you store them
+  setText("productKey", record.key);
+  setText("productId", record.id);
+
+  // Fields section
+  const f = record.fields || {};
+  setText("materials", f.materials);
+  setText("care", f.care);
+  setText("warranty", f.warranty);
+
+  // Optional: dump the raw record for debugging
+  const dump = document.getElementById("recordDump");
+  if (dump) dump.textContent = JSON.stringify(record, null, 2);
+}
+
+window.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const id = getParam("id");
+    const filename = currentFileName();
+
+    const table = await loadTable();
+
+    // Find record by id first, else by matching page filename, else by key param if you ever add it
+    const record =
+      (id ? table.find(r => String(r.id) === String(id)) : null) ||
+      table.find(r => String(r.page || "").toLowerCase() === filename.toLowerCase());
+
+    if (!record) {
+      showError(`No product record found for id='${id}' or page='${filename}'.`);
+      return;
+    }
+
+    populate(record);
+  } catch (e) {
+    showError(e.message || "Unable to load product data.");
+  }
+});
