@@ -1,13 +1,4 @@
-<!doctype html>.css" />
-
-  <!-- This script will fetch data/products.json and populate the IDs below -->
-  <script defer src="product-page.js"></script>
-</head>
-
-<body>
-  <!-- Simple header / back link -->
-  <header class="topbar">
-    <div class="brand">
+<!doctype html>    <div class="brand">
       <a href="index.html" style="text-decoration:none; color:inherit;">carhartt</a>
     </div>
     <nav class="menu">
@@ -15,37 +6,38 @@
     </nav>
   </header>
 
-  <main style="padding-top: 72px; max-width: 980px; margin: 0 auto; padding-left: 16px; padding-right: 16px;">
+  <main style="padding-top:72px; max-width: 980px; margin: 0 auto; padding-left:16px; padding-right:16px;">
+    <!-- These IDs are required by your product-page.js -->
     <h1 id="productTitle">Loading…</h1>
     <p id="productMeta"></p>
 
     <div style="display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start; margin-top: 16px;">
       <div style="flex: 0 0 320px; max-width: 100%;">
-        <img id="productImage" alt="Product image" style="width:100%; border-radius: 6px; background:#f2f2f2;" />
+        <img id="productImage" alt="Product image" style="width:100%; border-radius:6px; background:#f2f2f2;" />
       </div>
 
       <div style="flex: 1 1 320px; min-width: 280px;">
         <h2>Details</h2>
 
-        <div style="margin-top: 12px;">
+        <div style="margin-top:12px;">
           <div><strong>Materials:</strong> <span id="materials"></span></div>
           <div><strong>Care:</strong> <span id="care"></span></div>
           <div><strong>Warranty:</strong> <span id="warranty"></span></div>
         </div>
 
-        <!-- Optional: show the matched key/id for troubleshooting -->
-        <div style="margin-top: 16px; font-size: 0.95em; color:#444;">
+        <!-- Optional (your script will fill these too) -->
+        <div style="margin-top:16px; font-size:0.95em; color:#444;">
           <div><strong>Record ID:</strong> <span id="productId"></span></div>
           <div><strong>Matched Key:</strong> <span id="productKey"></span></div>
         </div>
       </div>
     </div>
 
-    <!-- Error output (hidden until needed) -->
+    <!-- Your product-page.js uses this ID for errors -->
     <p id="pageError" class="hidden" style="margin-top: 16px; color:#b00020;"></p>
 
-    <!-- Optional debug dump: uncomment if you want to see the entire matched record -->
-    <!-- <pre id="recordDump" style="margin-top: 16px; background:#f6f6f6; padding:12px; border-radius:6px; overflow:auto;"></pre> -->
+    <!-- Optional debug dump (uncomment if needed) -->
+    <!-- <pre id="recordDump" style="margin-top:16px; background:#f6f6f6; padding:12px; border-radius:6px; overflow:auto;"></pre> -->
   </main>
 </body>
 </html>
@@ -56,4 +48,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>K87 Product Details</title>
 
-  <!-- Use your existing site styling -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Populate this page from data/products.json -->
+  <script defer src="product-page.js"></script>
+</head>
+
+<body>
+  <header class="topbar">
