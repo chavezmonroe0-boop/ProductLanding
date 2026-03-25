@@ -1,27 +1,9 @@
-<!doctype html>  <link rel="stylesheet" href="styles.css">
+<!doctype html>Resolving product…</h1>
+    <p id="status">Reading QR parameters…</p>
 
-  <!-- This script will read ?01=...&400=... then redirect -->
-  <script defer src="qr-resolver.js"></script>
-</head>
-
-<body>
-  <header class="topbar">
-    <div class="brand">
-      <a href="index.html" style="text-decoration:none;color:inherit;">carhartt</a>
-    </div>
-    <nav class="menu">
-      <a href="index.html">Scanner</a>
-    </nav>
-  </header>
-
-  <main style="padding-top:72px; max-width: 980px; margin: 0 auto; padding: 0 16px;">
-    <h1>Resolving product…</h1>
-    <p id="status">Reading QR parameters and validating…</p>
-
-    <!-- Shown only if there’s an error -->
     <p id="autoError" class="hidden" style="color:#b00020;"></p>
 
-    <!-- Optional: show parsed info for troubleshooting -->
+    <!-- Optional debug -->
     <pre id="debug" class="hidden" style="background:#f6f6f6;padding:12px;border-radius:6px;overflow:auto;"></pre>
   </main>
 </body>
@@ -33,3 +15,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Auto Resolve</title>
 
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Reads the querystring and redirects -->
+  <script defer src="qr-resolver.js"></script>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <a href="index.html" style="text-decoration:none; color:inherit;">carhartt</a>
+    </div>
+    <nav class="menu">
+      <a href="index.html">Scanner</a>
+    </nav>
+  </header>
+
+  <main style="padding-top:72px; max-width: 980px; margin: 0 auto; padding: 0 16px;">
