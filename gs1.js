@@ -11,6 +11,7 @@
     { id: "10", fixed: null, max: 20, key: "lot" },
     { id: "21", fixed: null, max: 20, key: "serial" },
     { id: "240", fixed: null, max: 30, key: "style" },
+    { id: "30", fixed: null, max: 8, key: "qty" },
     { id: "241", fixed: null, max: 30 }, // stored as "241"
     { id: "400", fixed: null, max: 30, key: "po" }, // PO#
     { id: "422", fixed: 3, key: "cooNumeric" } // Country of Origin (numeric)
