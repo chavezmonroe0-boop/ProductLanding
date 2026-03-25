@@ -112,4 +112,3 @@ window.addEventListener("DOMContentLoaded", async () => {
     showError("Unexpected resolver error.", err.message || err);
   }
 });
-``
