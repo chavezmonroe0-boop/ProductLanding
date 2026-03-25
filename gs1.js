@@ -1,116 +1,7 @@
-// Minimal GS1 parser for common AIs used in apparel actual GS character
-    s = s.replace(/<GS>/g, GS);              // UI placeholder used in HID mode
+// gs1.js
+// Minimal GS1 parser for common AIs used in apparel
+// Ensures AI 400 (PO) is exposed as parsed.po and parsed["400"]
 
-    return s;
-  }
-
-  function parseGS1(input) {
-    const s = normalizeScanString(input);
-    if (!s) return {};
-
-    let i = 0;
-    const out = {};
-    const len = s.length;
-
-    while (i < len) {
-      let ai = null;
-
-      // Try 4-digit, then 3-digit, then 2-digit AIs
-      for (const w of [4, 3, 2]) {
-        const cand = s.substr(i, w);
-        if (AI_BY_ID[cand]) {
-          ai = cand;
-          i += w;
-          break;
-        }
-      }
-
-      if (!ai) {
-        i += 1;
-        continue;
-      }
-
-      const def = AI_BY_ID[ai];
-
-      // === FIXED-LENGTH FIELDS ===
-      if (def.fixed != null) {
-        const value = s.substr(i, def.fixed);
-        i += def.fixed;
-
-        if (ai === "422") {
-          const padded = String(value).padStart(3, "0");
-          const alpha2 = countryAlpha2ByNumeric[padded] || "";
-
-          // Store numeric and helpful variants
-          out["422"] = padded;
-          out.cooNumeric = padded;
-          out.cooAlpha2 = alpha2;
-          out.coo = alpha2 ? `${alpha2} (${padded})` : padded;
-
-          continue;
-        }
-
-        set(out, def, value);
-      }
-      // === VARIABLE-LENGTH FIELDS ===
-      else {
-        const nextGS = s.indexOf(GS, i);
-        let raw = (nextGS === -1 ? s.substring(i) : s.substring(i, nextGS));
-
-        // If no GS separator exists, we can only safely cut to max.
-        if (def.max && raw.length > def.max) {
-          raw = raw.substring(0, def.max);
-        }
-
-        i += raw.length + (nextGS === -1 ? 0 : 1);
-        set(out, def, raw);
-      }
-    }
-
-    // Normalize GTIN (AI 01)
-    if (out.gtin) {
-      out.gtin = String(out.gtin).replace(/\D/g, "").padStart(14, "0");
-      out["01"] = out.gtin;
-    }
-
-    // Convert YYMMDD -> YYYY-MM-DD for expiry (AI 17)
-    if (out.expiry && /^\d{6}$/.test(out.expiry)) {
-      const yy = out.expiry.slice(0, 2);
-      const mm = out.expiry.slice(2, 4);
-      const dd = out.expiry.slice(4, 6);
-      out.expiry = `20${yy}-${mm}-${dd}`;
-      out["17"] = `${yy}${mm}${dd}`;
-    }
-
-    // Ensure helpful aliases exist for lookups
-    if (out.lot) out["10"] = out.lot;
-    if (out.serial) out["21"] = out.serial;
-    if (out.style) out["240"] = out.style;
-    if (out.po) out["400"] = out.po;
-
-    return out;
-  }
-
-  function set(out, def, val) {
-    const key = def.key || def.id;
-    out[key] = val;
-    out[def.id] = val; // always keep raw AI key too
-  }
-
-  // Expose globally
-  window.parseGS1 = parseGS1;
-  window.countryAlpha2ByNumeric = countryAlpha2ByNumeric;
-
-  // Optional helper: format numeric COO as "US (840)" if available
-  window.formatCOO = function(ai422) {
-    if (!ai422) return "";
-    const code = String(ai422).padStart(3, "0");
-    const alpha2 = countryAlpha2ByNumeric[code];
-    return alpha2 ? `${alpha2} (${code})` : code;
-  };
-})();
-``
-// Supports GS (ASCII 29) separators and optional AIM symbology identifier prefix (e.g., "]d2")
 (() => {
   const GS = String.fromCharCode(29);
 
@@ -120,14 +11,14 @@
     { id: "10", fixed: null, max: 20, key: "lot" },
     { id: "21", fixed: null, max: 20, key: "serial" },
     { id: "240", fixed: null, max: 30, key: "style" },
-    { id: "241", fixed: null, max: 30 }, // no key => stored as "241"
-    { id: "400", fixed: null, max: 30, key: "po" },
+    { id: "241", fixed: null, max: 30 }, // stored as "241"
+    { id: "400", fixed: null, max: 30, key: "po" }, // PO#
     { id: "422", fixed: 3, key: "cooNumeric" } // Country of Origin (numeric)
   ];
 
   const AI_BY_ID = Object.fromEntries(AI_TABLE.map(a => [a.id, a]));
 
-  // === ISO 3166-1 numeric -> alpha-2 map for GS1 AI (422) Country of Origin ===
+  // ISO 3166-1 numeric -> alpha-2 map for AI (422)
   const countryAlpha2ByNumeric = {
     "004": "AF","008": "AL","012": "DZ","016": "AS","031": "AZ","036": "AU","040": "AT","051": "AM",
     "056": "BE","076": "BR","100": "BG","124": "CA","156": "CN","170": "CO","191": "HR","196": "CY",
@@ -144,11 +35,111 @@
     if (!input) return "";
     let s = String(input);
 
-    // Some scanners prepend AIM symbology identifiers such as "]d2"
-    // If present, strip the 3-char prefix.
-    if (s.length >= 3 && s[0] === "]") {
-      s = s.slice(3);
+    // Strip AIM symbology identifier prefix like ]d2 if present
+    if (s.length >= 3 && s[0] === "]") s = s.slice(3);
+
+    // Normalize GS separators / placeholders
+    s = s.replace(/\\u001d/g, GS);
+    s = s.replace(/\u001d/g, GS);
+    s = s.replace(/<GS>/g, GS);
+
+    return s;
+  }
+
+  function parseGS1(input) {
+    const s = normalizeScanString(input);
+    if (!s) return {};
+
+    let i = 0;
+    const out = {};
+    const len = s.length;
+
+    while (i < len) {
+      let ai = null;
+
+      for (const w of [4, 3, 2]) {
+        const cand = s.substr(i, w);
+        if (AI_BY_ID[cand]) {
+          ai = cand;
+          i += w;
+          break;
+        }
+      }
+
+      if (!ai) {
+        i += 1;
+        continue;
+      }
+
+      const def = AI_BY_ID[ai];
+
+      if (def.fixed != null) {
+        const value = s.substr(i, def.fixed);
+        i += def.fixed;
+
+        if (ai === "422") {
+          const padded = String(value).padStart(3, "0");
+          const alpha2 = countryAlpha2ByNumeric[padded] || "";
+
+          out["422"] = padded;
+          out.cooNumeric = padded;
+          out.cooAlpha2 = alpha2;
+          out.coo = alpha2 ? `${alpha2} (${padded})` : padded;
+          continue;
+        }
+
+        set(out, def, value);
+      } else {
+        const nextGS = s.indexOf(GS, i);
+        let raw = (nextGS === -1 ? s.substring(i) : s.substring(i, nextGS));
+        if (def.max && raw.length > def.max) raw = raw.substring(0, def.max);
+
+        i += raw.length + (nextGS === -1 ? 0 : 1);
+
+        // Normalize PO for consistent matching (trim only; uppercase is handled in app.js)
+        if (ai === "400") raw = raw.trim();
+
+        set(out, def, raw);
+      }
     }
 
-    // Normalize common placeholders into GS.
-    s = s.replace(/\\u001d/g, GS);           // literal \u001d text
+    // Normalize GTIN
+    if (out.gtin) {
+      out.gtin = String(out.gtin).replace(/\D/g, "").padStart(14, "0");
+      out["01"] = out.gtin;
+    }
+
+    // Expiry YYMMDD -> YYYY-MM-DD (also preserve raw 17)
+    if (out.expiry && /^\d{6}$/.test(out.expiry)) {
+      const yy = out.expiry.slice(0, 2);
+      const mm = out.expiry.slice(2, 4);
+      const dd = out.expiry.slice(4, 6);
+      out["17"] = `${yy}${mm}${dd}`;
+      out.expiry = `20${yy}-${mm}-${dd}`;
+    }
+
+    // Ensure common AI aliases exist
+    if (out.po) out["400"] = out.po;
+    if (out.lot) out["10"] = out.lot;
+    if (out.serial) out["21"] = out.serial;
+    if (out.style) out["240"] = out.style;
+
+    return out;
+  }
+
+  function set(out, def, val) {
+    const key = def.key || def.id;
+    out[key] = val;
+    out[def.id] = val;
+  }
+
+  window.parseGS1 = parseGS1;
+  window.countryAlpha2ByNumeric = countryAlpha2ByNumeric;
+
+  window.formatCOO = function(ai422) {
+    if (!ai422) return "";
+    const code = String(ai422).padStart(3, "0");
+    const alpha2 = countryAlpha2ByNumeric[code];
+    return alpha2 ? `${alpha2} (${code})` : code;
+  };
+})();
