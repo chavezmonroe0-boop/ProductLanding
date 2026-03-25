@@ -59,10 +59,10 @@ function populate(record) {
   const f = record.fields || {};
   setText("materials", f.materials);
   setText("care", f.care);
-  setText("coo", f.COO);
-  setText("po", f.PO);
-  setText("style", f.Style);
-  setText("description", f.Description);
+  setText("coo", f.coo);
+  setText("po", f.po);
+  setText("style", f.style);
+  setText("description", f.description);
 
   const dump = document.getElementById("recordDump");
   if (dump) dump.textContent = JSON.stringify(record, null, 2);
