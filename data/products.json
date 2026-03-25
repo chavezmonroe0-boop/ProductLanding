@@ -1,1 +1,35 @@
-
+[
+  {
+    "id": "demo-001",
+    "key": "00123456789012|ABC123SER",
+    "gtin": "00123456789012",
+    "serial": "ABC123SER",
+    "coo": "US",
+    "title": "Relaxed Fit Heavyweight Pocket Tee",
+    "image": "assets/products/tee.jpg",
+    "meta": "Color: Black • Size: L • COO: US",
+    "page": "product.html",
+    "fields": {
+      "materials": "100% cotton",
+      "care": "Machine wash cold",
+      "warranty": "1-year limited"
+    }
+  },
+  {
+    "id": "demo-002",
+    "key": "00123456789012|LOT99",
+    "gtin": "00123456789012",
+    "lot": "LOT99",
+    "coo": "MX",
+    "title": "Duck Active Jacket",
+    "image": "assets/products/jacket.jpg",
+    "meta": "Color: Carhartt Brown • Size: M • COO: MX",
+    "page": "product.html",
+    "fields": {
+      "materials": "Cotton duck canvas",
+      "care": "Tumble dry low",
+      "warranty": "1-year limited"
+    }
+  }
+]
+``
