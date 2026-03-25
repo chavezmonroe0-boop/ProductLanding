@@ -27,10 +27,10 @@
     "fields": {
       "materials": "75% cotton / 25% polyester (example)",
       "care": "Tumble dry low (example)",
-      "COO": "?",
-      "PO": "3510042476",
-      "Style": "100615 Black Regular Large",
-      "Description": "Rain Defender Hooded Sweatshirt"
+      "coo": "?",
+      "po": "3510042476",
+      "style": "100615 Black Regular Large",
+      "description": "Rain Defender Hooded Sweatshirt"
     }
   }
 ]
