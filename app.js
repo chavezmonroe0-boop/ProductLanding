@@ -1,138 +1,117 @@
 // App logic for modal + scanning loop + HID support
-const modal = document.getElementById('scannerModal');
-const openLink = document.getElementById('scan-link');
-const closeBtn = document.getElementById('closeModal');
+// Updated: Scan -> parse -> validate -> search data/products.json -> redirect to record.page?id=record.id
+// No immediate decoded data display (status only unless DEBUG is enabled)
 
-function openModal() { modal.setAttribute('aria-hidden', 'false'); enumerateCameras(); }
-function closeModal() { modal.setAttribute('aria-hidden', 'true'); stopCamera(); }
-openLink.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
-closeBtn.addEventListener('click', () => closeModal());
+const DEBUG = false; // set true to show decoded/parsed data on failures
 
-// Tabs
-const tabs = document.querySelectorAll('.tab');
-const panes = document.querySelectorAll('.tabpane');
-tabs.forEach(t => t.addEventListener('click', () => {
-  tabs.forEach(x => x.classList.remove('active'));
-  panes.forEach(p => p.classList.remove('active'));
-  t.classList.add('active');
-  document.getElementById(t.dataset.tab).classList.add('active');
-}));
+// Modal
+const modal = document.getElementById("scannerModal");
+const openLink = document.getElementById("scan-link");
+const closeBtn = document.getElementById("closeModal");
 
-// Camera scanning
-const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-const startBtn = document.getElementById('startBtn');
-const stopBtn = document.getElementById('stopBtn');
-const cameraSelect = document.getElementById('cameraSelect');
-const fileInput = document.getElementById('fileInput');
-const resultTable = document.getElementById('resultTable');
-const decodedRaw = document.getElementById('decodedRaw');
-const productCard = document.getElementById('productCard');
-const productImage = document.getElementById('productImage');
-const productTitle = document.getElementById('productTitle');
-const productMeta = document.getElementById('productMeta');
-
-
-// Convert numeric like "156" to "CN (156)"; if unknown, show the number.
-// Expose on window so it's accessible anywhere.
-window.formatCOO = function(ai422) {
-  if (!ai422) return "";
-  const code = String(ai422).padStart(3, "0"); // normalize to 3 digits
-  const alpha2 = countryAlpha2ByNumeric[code];
-  return alpha2 ? `${alpha2} (${code})` : code;
-};
-
-
-
-
-
-
-
-
-
-
-let stream = null; let scanning = false; let rafId = null; let catalog = { items: [] };
-
-async function loadCatalog() { try { const r = await fetch('catalog.json'); if (r.ok) catalog = await r.json(); } catch(e) {} }
-async function enumerateCameras() { try { const devices = await navigator.mediaDevices.enumerateDevices(); const vids = devices.filter(d=>d.kind==='videoinput'); cameraSelect.innerHTML=''; for (const d of vids) { const o=document.createElement('option'); o.value=d.deviceId; o.textContent=d.label || `Camera ${cameraSelect.length+1}`; cameraSelect.appendChild(o);} } catch(e){} }
-
-
-async function startCamera() {
-  if (!navigator.mediaDevices?.getUserMedia) {
-    alert('Camera API not available in this browser.');
-    return;
-  }
-
-  try {
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        deviceId: cameraSelect.value ? { exact: cameraSelect.value } : undefined,
-        facingMode: 'environment',
-        width: { ideal: 1280 },
-        height: { ideal: 720 }
-      },
-      audio: false
-    });
-
-    video.srcObject = stream;
-    await video.play();
-    scanning = true;
-    scanLoop();
-
-  } catch (err) {
-    alert('Unable to start camera: ' + err.message);
-  }
+function openModal() {
+  modal.setAttribute("aria-hidden", "false");
+  enumerateCameras();
+}
+function closeModal() {
+  modal.setAttribute("aria-hidden", "true");
+  stopCamera();
 }
 
-
-
-function stopCamera() { scanning=false; if (rafId) cancelAnimationFrame(rafId); if (stream) { stream.getTracks().forEach(t=>t.stop()); stream=null; } }
-startBtn.addEventListener('click', startCamera); stopBtn.addEventListener('click', stopCamera);
-
-fileInput.addEventListener('change', async (e)=>{ const f=e.target.files?.[0]; if(!f) return; const ab=await f.arrayBuffer(); try { await ensureZXingReady(); const results = await ZXingWASM.readBarcodes(new Uint8Array(ab), { tryHarder:true, formats:['DataMatrix','QRCode','PDF417'] }); handleResults(results); } catch(err){ decodedRaw.textContent='No barcode found in image.'; }});
-
-async function ensureZXingReady(){ if (ZXingWASM.ready) await ZXingWASM.ready; }
-async function scanLoop(){ if(!scanning) return; const vw=video.videoWidth||1280, vh=video.videoHeight||720; const tw=640, th=Math.round((vh/vw)*tw); canvas.width=tw; canvas.height=th; ctx.drawImage(video,0,0,tw,th); const img=ctx.getImageData(0,0,tw,th); try { await ensureZXingReady(); const results=await ZXingWASM.readBarcodes(img,{tryHarder:true, formats:['DataMatrix']}); if(results && results.length){ handleResults(results); scanning=false; setTimeout(()=>{ scanning=true; scanLoop(); }, 1200); return; } } catch(e){} rafId=requestAnimationFrame(scanLoop); }
-
-function handleResults(results){ const best=results[0]; const text=best?.text||''; decodedRaw.textContent = text.replace(/\x1d/g,'<GS>').replace(/\u001d/g,'<GS>'); const parsed = parseGS1(text); renderTableGeneric(parsed, text, resultTable); tryShowProductGeneric(parsed, productCard, productImage, productTitle, productMeta); }
-
-function renderTableGeneric(parsed, raw, tableEl){ const rows=[]; const add=(k,v)=>{ if(v!==undefined && v!=='') rows.push(`<tr><td>${k}</td><td>${v}</td></tr>`); }; add('GTIN', parsed.gtin||parsed['01']); add('Country of Origin (COO)', parsed.coo||parsed['422']); add('Purchase Order #', parsed.po||parsed['400']); add('Garment Style', parsed.style||parsed['240']||parsed['241']); add('Batch/Lot', parsed.lot||parsed['10']); add('Serial', parsed.serial||parsed['21']); add('Expiry', parsed.expiry||parsed['17']); add('Raw (escaped GS=\u001D)', raw.replace(/\u001d/g,'<GS>')); tableEl.innerHTML = rows.join(''); }
-
-function tryShowProductGeneric(parsed, cardEl, imgEl, titleEl, metaEl){ const key=(parsed.gtin||'').padStart(14,'0'); const style=parsed.style||parsed['240']||parsed['241']; let item=null; if(key) item=catalog.items.find(i=>(i.gtin||'').padStart(14,'0')===key)||null; if(!item && style) item=catalog.items.find(i=>(i.style||'').toLowerCase()===String(style).toLowerCase())||null; if(item && item.image){ imgEl.src=item.image; titleEl.textContent=item.title||item.style||item.gtin||'Garment'; metaEl.textContent=[item.color,item.size,item.gtin].filter(Boolean).join(' · '); cardEl.classList.remove('hidden'); } else { cardEl.classList.add('hidden'); } }
-
-// HID mode
-const hidInput = document.getElementById('hidInput');
-const hidParseBtn = document.getElementById('hidParseBtn');
-const hidClearBtn = document.getElementById('hidClearBtn');
-const decodedRawHID = document.getElementById('decodedRawHID');
-const resultTableHID = document.getElementById('resultTableHID');
-const productCardHID = document.getElementById('productCardHID');
-const productImageHID = document.getElementById('productImageHID');
-const productTitleHID = document.getElementById('productTitleHID');
-const productMetaHID = document.getElementById('productMetaHID');
-
-hidInput?.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); parseHID(hidInput.value); }});
-hidParseBtn?.addEventListener('click', ()=>parseHID(hidInput.value));
-hidClearBtn?.addEventListener('click', ()=>{ hidInput.value=''; decodedRawHID.textContent=''; resultTableHID.innerHTML=''; productCardHID.classList.add('hidden'); });
-
-function parseHID(raw){ const normalized = raw.replace(/<GS>/g, String.fromCharCode(29)); const parsed = parseGS1(normalized); decodedRawHID.textContent = normalized.replace(/\u001d/g,'<GS>'); renderTableGeneric(parsed, normalized, resultTableHID); tryShowProductGeneric(parsed, productCardHID, productImageHID, productTitleHID, productMetaHID); }
-
-
-// Load catalog and camera list on page load (NO CAMERA START)
-window.addEventListener('DOMContentLoaded', async () => {
-  await loadCatalog();
-  await enumerateCameras();
+openLink?.addEventListener("click", (e) => {
+  e.preventDefault();
+  openModal();
 });
+closeBtn?.addEventListener("click", () => closeModal());
 
+// Tabs
+const tabs = document.querySelectorAll(".tab");
+const panes = document.querySelectorAll(".tabpane");
+tabs.forEach((t) =>
+  t.addEventListener("click", () => {
+    tabs.forEach((x) => x.classList.remove("active"));
+    panes.forEach((p) => p.classList.remove("active"));
+    t.classList.add("active");
+    document.getElementById(t.dataset.tab)?.classList.add("active");
+  })
+);
 
+// Camera scanning
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const ctx = canvas?.getContext("2d");
+const startBtn = document.getElementById("startBtn");
+const stopBtn = document.getElementById("stopBtn");
+const cameraSelect = document.getElementById("cameraSelect");
+const fileInput = document.getElementById("fileInput");
 
+const resultTable = document.getElementById("resultTable");
+const decodedRaw = document.getElementById("decodedRaw");
 
+// Existing product card elements (kept, but now used only for optional debug fallback)
+const productCard = document.getElementById("productCard");
+const productImage = document.getElementById("productImage");
+const productTitle = document.getElementById("productTitle");
+const productMeta = document.getElementById("productMeta");
 
+let stream = null;
+let scanning = false;
+let rafId = null;
 
+// === Repo "table" (JSON database) ===
+let productTable = { items: [] };
+let productTableLoaded = false;
 
+async function loadProductTable() {
+  if (productTableLoaded) return;
+  const r = await fetch("data/products.json");
+  if (!r.ok) throw new Error("Could not load data/products.json");
 
+  const data = await r.json();
+  productTable.items = Array.isArray(data) ? data : (data.items || []);
+  productTableLoaded = true;
+}
 
+// Accept either:
+// - record.key (preferred), OR
+// - record.gtin + record.serial/lot
+function recordKey(record) {
+  if (record.key) return String(record.key);
 
+  const gtin = String(record.gtin || "").replace(/\D/g, "").padStart(14, "0");
+  const serial = String(record.serial || "").trim();
+  const lot = String(record.lot || "").trim();
+  if (!gtin) return "";
+  if (serial) return `${gtin}|${serial}`;
+  if (lot) return `${gtin}|${lot}`;
+  return "";
+}
 
+function validateRequiredAIs(parsed) {
+  const gtin = String(parsed.gtin || parsed["01"] || "").replace(/\D/g, "").padStart(14, "0");
+  const serial = String(parsed.serial || parsed["21"] || "").trim();
+  const lot = String(parsed.lot || parsed["10"] || "").trim();
 
+  // Customize validation rules here
+  if (!gtin || gtin.length !== 14) {
+    return { ok: false, message: "Invalid or missing GTIN (AI 01). Expect 14 digits." };
+  }
+  if (!serial && !lot) {
+    return { ok: false, message: "Missing Serial (AI 21) or Lot (AI 10)." };
+  }
+  if (serial && serial.length > 20) {
+    return { ok: false, message: "Serial (AI 21) too long (max 20)." };
+  }
+  if (lot && lot.length > 20) {
+    return { ok: false, message: "Lot (AI 10) too long (max 20)." };
+  }
+
+  // Optional: validate COO if required
+  // const coo = String(parsed["422"] || parsed.cooNumeric || "").padStart(3, "0");
+  // if (!coo) return { ok: false, message: "Missing Country of Origin (AI 422)." };
+
+  return { ok: true, gtin, serial, lot };
+}
+
+function buildLookupKey(v) {
+  return v.serial ? `${v.gtin}|${v.serial}` :
