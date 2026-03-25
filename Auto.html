@@ -1,35 +1,34 @@
-<!doctype html>Resolving product…</h1>
-    <p id="status">Reading QR parameters…</p>
-
-    <p id="autoError" class="hidden" style="color:#b00020;"></p>
-
-    <!-- Optional debug -->
-    <pre id="debug" class="hidden" style="background:#f6f6f6;padding:12px;border-radius:6px;overflow:auto;"></pre>
-  </main>
-</body>
-</html>
-
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Resolving Product…</title>
+  <title>Auto Resolve</title>
 
-  <!-- ✅ Correct CSS include -->
+  <!-- ✅ CSS MUST use a link tag -->
   <link rel="stylesheet" href="styles.css">
 
-  <!-- ✅ Correct JS include -->
+  <!-- ✅ JS MUST use a script tag -->
   <script src="qr-resolver.js" defer></script>
 </head>
 
 <body>
   <header class="topbar">
     <div class="brand">
-      <a href="index.html" style="text-decoration:none; color:inherit;">carhartt</a>
+      <a href="index.html">carhartt</a>
     </div>
     <nav class="menu">
       <a href="index.html">Scanner</a>
     </nav>
   </header>
 
-  <main style="padding-top:72px; max-width: 980px; margin: 0 auto; padding: 0 16px;">
+  <main style="padding-top:72px; max-width:960px; margin:auto; padding:16px;">
+    <h1>Resolving product…</h1>
+    <p id="status">Reading QR data…</p>
+
+    <p id="autoError" class="hidden" style="color:#b00020;"></p>
+    <pre id="debug" class="hidden"></pre>
+  </main>
+</body>
+</html>
+``
