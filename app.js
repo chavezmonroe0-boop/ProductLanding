@@ -1,4 +1,117 @@
-// app.js — GTIN + PO lookup"]);
+// app.js — GTIN + PO lookup
+// Uses: window.parseGS1 from gs1.js
+// Loads: data/products.json (your repo table)
+// Redirects: record.page?id=record.id
+
+const DEBUG = false;
+
+const modal = document.getElementById("scannerModal");
+const openLink = document.getElementById("scan-link");
+const closeBtn = document.getElementById("closeModal");
+
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const ctx = canvas?.getContext("2d");
+const startBtn = document.getElementById("startBtn");
+const stopBtn = document.getElementById("stopBtn");
+const cameraSelect = document.getElementById("cameraSelect");
+const fileInput = document.getElementById("fileInput");
+
+const decodedRaw = document.getElementById("decodedRaw");
+const resultTable = document.getElementById("resultTable");
+
+const hidInput = document.getElementById("hidInput");
+const hidParseBtn = document.getElementById("hidParseBtn");
+const hidClearBtn = document.getElementById("hidClearBtn");
+const decodedRawHID = document.getElementById("decodedRawHID");
+const resultTableHID = document.getElementById("resultTableHID");
+
+// ---------- Modal ----------
+function openModal() {
+  modal?.setAttribute("aria-hidden", "false");
+  enumerateCameras();
+}
+function closeModal() {
+  modal?.setAttribute("aria-hidden", "true");
+  stopCamera();
+}
+openLink?.addEventListener("click", (e) => { e.preventDefault(); openModal(); });
+closeBtn?.addEventListener("click", () => closeModal());
+
+// Tabs (same class names as your HTML)
+document.querySelectorAll(".tab").forEach(t => {
+  t.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+    document.querySelectorAll(".tabpane").forEach(p => p.classList.remove("active"));
+    t.classList.add("active");
+    document.getElementById(t.dataset.tab)?.classList.add("active");
+  });
+});
+
+// ---------- Product table ----------
+let productTable = [];
+let tableLoaded = false;
+
+async function loadProductTable() {
+  if (tableLoaded) return;
+  const res = await fetch("data/products.json");
+  if (!res.ok) throw new Error("Could not load data/products.json");
+  const data = await res.json();
+  productTable = Array.isArray(data) ? data : (data.items || []);
+  tableLoaded = true;
+}
+
+function normalizeGTIN(v) {
+  return String(v || "").replace(/\D/g, "").padStart(14, "0");
+}
+function normalizePO(v) {
+  // IMPORTANT: strip any leftover parentheses or punctuation
+  return String(v || "").replace(/[()]/g, "").trim().toUpperCase();
+}
+
+function buildKeyFromParsed(parsed) {
+  const gtin = normalizeGTIN(parsed.gtin || parsed["01"]);
+  const po = normalizePO(parsed.po || parsed["400"]);
+  return { gtin, po, key: `${gtin}|${po}` };
+}
+
+function recordKey(r) {
+  if (r.key) return String(r.key).trim();
+  const gtin = normalizeGTIN(r.gtin);
+  const po = normalizePO(r.po);
+  return `${gtin}|${po}`;
+}
+
+function setStatus(el, msg) {
+  if (el) el.textContent = msg;
+}
+
+async function lookupAndRedirect(parsed) {
+  await loadProductTable();
+
+  const { gtin, po, key } = buildKeyFromParsed(parsed);
+
+  if (!gtin || gtin.length !== 14) throw new Error("Invalid/missing GTIN (AI 01).");
+  if (!po) throw new Error("Missing PO (AI 400).");
+
+  const rec = productTable.find(r => recordKey(r) === key);
+  if (!rec) throw new Error(`No match found for scanned key: ${key}`);
+
+  const page = rec.page || "K87.html";
+  const id = rec.id || "";
+  window.location.href = `${page}?id=${encodeURIComponent(id)}`;
+}
+
+// Optional debug render
+function renderDebug(parsed, raw, tableEl) {
+  if (!DEBUG || !tableEl) return;
+  const rows = [];
+  const add = (k, v) => { if (v) rows.push(`<tr><td>${k}</td><td>${v}</td></tr>`); };
+  add("GTIN (01)", parsed.gtin || parsed["01"]);
+  add("PO (400)", parsed.po || parsed["400"]);
+  add("COO (422)", parsed["422"]);
+  add("QTY (30)", parsed.qty || parsed["30"]);
+  add("STYLE (240)", parsed.style || parsed["240"]);
   add("RAW", raw);
   tableEl.innerHTML = rows.join("");
 }
@@ -135,116 +248,3 @@ window.addEventListener("DOMContentLoaded", async () => {
   try { await loadProductTable(); } catch { }
   await enumerateCameras();
 });
-``
-// Uses: window.parseGS1 from gs1.js
-// Loads: data/products.json (your repo table)
-// Redirects: record.page?id=record.id
-
-const DEBUG = false;
-
-const modal = document.getElementById("scannerModal");
-const openLink = document.getElementById("scan-link");
-const closeBtn = document.getElementById("closeModal");
-
-const video = document.getElementById("video");
-const canvas = document.getElementById("canvas");
-const ctx = canvas?.getContext("2d");
-const startBtn = document.getElementById("startBtn");
-const stopBtn = document.getElementById("stopBtn");
-const cameraSelect = document.getElementById("cameraSelect");
-const fileInput = document.getElementById("fileInput");
-
-const decodedRaw = document.getElementById("decodedRaw");
-const resultTable = document.getElementById("resultTable");
-
-const hidInput = document.getElementById("hidInput");
-const hidParseBtn = document.getElementById("hidParseBtn");
-const hidClearBtn = document.getElementById("hidClearBtn");
-const decodedRawHID = document.getElementById("decodedRawHID");
-const resultTableHID = document.getElementById("resultTableHID");
-
-// ---------- Modal ----------
-function openModal() {
-  modal?.setAttribute("aria-hidden", "false");
-  enumerateCameras();
-}
-function closeModal() {
-  modal?.setAttribute("aria-hidden", "true");
-  stopCamera();
-}
-openLink?.addEventListener("click", (e) => { e.preventDefault(); openModal(); });
-closeBtn?.addEventListener("click", () => closeModal());
-
-// Tabs (same class names as your HTML)
-document.querySelectorAll(".tab").forEach(t => {
-  t.addEventListener("click", () => {
-    document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
-    document.querySelectorAll(".tabpane").forEach(p => p.classList.remove("active"));
-    t.classList.add("active");
-    document.getElementById(t.dataset.tab)?.classList.add("active");
-  });
-});
-
-// ---------- Product table ----------
-let productTable = [];
-let tableLoaded = false;
-
-async function loadProductTable() {
-  if (tableLoaded) return;
-  const res = await fetch("data/products.json");
-  if (!res.ok) throw new Error("Could not load data/products.json");
-  const data = await res.json();
-  productTable = Array.isArray(data) ? data : (data.items || []);
-  tableLoaded = true;
-}
-
-function normalizeGTIN(v) {
-  return String(v || "").replace(/\D/g, "").padStart(14, "0");
-}
-function normalizePO(v) {
-  // IMPORTANT: strip any leftover parentheses or punctuation
-  return String(v || "").replace(/[()]/g, "").trim().toUpperCase();
-}
-
-function buildKeyFromParsed(parsed) {
-  const gtin = normalizeGTIN(parsed.gtin || parsed["01"]);
-  const po = normalizePO(parsed.po || parsed["400"]);
-  return { gtin, po, key: `${gtin}|${po}` };
-}
-
-function recordKey(r) {
-  if (r.key) return String(r.key).trim();
-  const gtin = normalizeGTIN(r.gtin);
-  const po = normalizePO(r.po);
-  return `${gtin}|${po}`;
-}
-
-function setStatus(el, msg) {
-  if (el) el.textContent = msg;
-}
-
-async function lookupAndRedirect(parsed) {
-  await loadProductTable();
-
-  const { gtin, po, key } = buildKeyFromParsed(parsed);
-
-  if (!gtin || gtin.length !== 14) throw new Error("Invalid/missing GTIN (AI 01).");
-  if (!po) throw new Error("Missing PO (AI 400).");
-
-  const rec = productTable.find(r => recordKey(r) === key);
-  if (!rec) throw new Error(`No match found for scanned key: ${key}`);
-
-  const page = rec.page || "K87.html";
-  const id = rec.id || "";
-  window.location.href = `${page}?id=${encodeURIComponent(id)}`;
-}
-
-// Optional debug render
-function renderDebug(parsed, raw, tableEl) {
-  if (!DEBUG || !tableEl) return;
-  const rows = [];
-  const add = (k, v) => { if (v) rows.push(`<tr><td>${k}</td><td>${v}</td></tr>`); };
-  add("GTIN (01)", parsed.gtin || parsed["01"]);
-  add("PO (400)", parsed.po || parsed["400"]);
-  add("COO (422)", parsed["422"]);
-  add("QTY (30)", parsed.qty || parsed["30"]);
