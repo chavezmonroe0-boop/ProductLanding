@@ -1,34 +1,28 @@
 [
   {
-    "id": "demo-001",
+    "id": "k87",
+    "page": "K87.html",
     "key": "00123456789012|ABC123SER",
-    "gtin": "00123456789012",
-    "serial": "ABC123SER",
-    "coo": "US",
-    "title": "Relaxed Fit Heavyweight Pocket Tee",
-    "image": "assets/products/tee.jpg",
-    "meta": "Color: Black • Size: L • COO: US",
-    "page": "product.html",
+    "title": "K87 Pocket Tee",
+    "image": "assets/products/k87.jpg",
+    "meta": "Relaxed Fit • Pocket Tee • Example metadata",
     "fields": {
-      "materials": "100% cotton",
-      "care": "Machine wash cold",
-      "warranty": "1-year limited"
+      "materials": "100% cotton (example)",
+      "care": "Machine wash cold (example)",
+      "warranty": "1-year limited (example)"
     }
   },
   {
-    "id": "demo-002",
+    "id": "100615",
+    "page": "100615.html",
     "key": "00123456789012|LOT99",
-    "gtin": "00123456789012",
-    "lot": "LOT99",
-    "coo": "MX",
-    "title": "Duck Active Jacket",
-    "image": "assets/products/jacket.jpg",
-    "meta": "Color: Carhartt Brown • Size: M • COO: MX",
-    "page": "product.html",
+    "title": "100615 Paxton Sweatshirt",
+    "image": "assets/products/100615.jpg",
+    "meta": "Rain Defender • Hooded Sweatshirt • Example metadata",
     "fields": {
-      "materials": "Cotton duck canvas",
-      "care": "Tumble dry low",
-      "warranty": "1-year limited"
+      "materials": "75% cotton / 25% polyester (example)",
+      "care": "Tumble dry low (example)",
+      "warranty": "1-year limited (example)"
     }
   }
 ]
