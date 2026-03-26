@@ -10,42 +10,47 @@
   <script defer src="gs1.js"></script>
   <script defer src="app.js"></script>
 
-  <!-- Page-specific layout tweaks (no need to edit styles.css) -->
+  <!-- Page-specific overrides (keeps styles.css intact) -->
   <style>
-    /* Full-page background image (instead of banner-only hero background) */
+    /* Full-page background image */
     html, body { height: 100%; }
     body {
       background: #000 url("backgroundlp.png") center/cover no-repeat fixed;
     }
 
-    /* Let the body background show through everywhere */
+    /* Let body background show through; keep hero as a layout container */
     .hero {
       background: transparent !important;
-      height: 72vh;
-      min-height: 520px;
+      min-height: 100vh; /* full viewport so panel can sit "top section" */
+      height: auto;
     }
 
-    /* Optional: keep the existing overlay spacing, but remove white text dependence */
+    /* The overlay is currently white text in styles.css; we won't use it for text now */
     .hero .overlay {
-      padding-top: 18vh;
+      color: inherit;
+      padding: 0;            /* override the heavy top padding from styles.css */
+      max-width: none;       /* allow our panel to control width */
     }
 
-    /* Encapsulated "table/card" panel that matches the topbar look */
+    /* Panel container positioned in the TOP section (below header) */
     .info-panel {
       max-width: 960px;
-      margin: -64px auto 56px; /* pull up slightly into hero area */
-      padding: 0 16px;
-      position: relative;
-      z-index: 2;
+      margin: 0 auto;
+      padding: 88px 16px 24px; /* 56px fixed header + breathing room */
+      display: flex;
+      justify-content: center;
     }
 
+    /* "Table/card" styling matches the topbar look */
     .info-panel__inner {
-      background: rgba(255,255,255,.92);           /* same as .topbar */
-      backdrop-filter: saturate(180%) blur(6px);   /* same as .topbar */
+      width: 100%;
+      background: rgba(255,255,255,.92);           /* matches .topbar */ /* [1](https://carhartt.sharepoint.com/sites/DistributionAnalystGroup/Shared%20Documents/Data%20Matrix%20Hackathon/static_site_hid/styles.css?web=1) */
+      backdrop-filter: saturate(180%) blur(6px);   /* matches .topbar */ /* [1](https://carhartt.sharepoint.com/sites/DistributionAnalystGroup/Shared%20Documents/Data%20Matrix%20Hackathon/static_site_hid/styles.css?web=1) */
       border: 1px solid rgba(0,0,0,.08);
       border-radius: 14px;
       padding: 22px 20px;
-      color: #111; /* black text */
+      color: #111;              /* black text */
+      text-align: center;       /* ✅ center align all text */
       box-shadow: 0 16px 40px rgba(0,0,0,0.25);
     }
 
@@ -64,12 +69,13 @@
 
     .info-panel__actions {
       display: flex;
-      gap: 12px;
+      justify-content: center; /* ✅ center the button */
       align-items: center;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
-    /* Modern, larger scan button (black text) */
+    /* Modern scan button */
     #scan-link.scan-cta-btn {
       appearance: none;
       border: 0;
@@ -79,7 +85,6 @@
       font-weight: 800;
       cursor: pointer;
       color: #111;
-
       background: linear-gradient(180deg, #ffcc33 0%, #ffbf00 100%);
       box-shadow: 0 10px 22px rgba(0,0,0,0.22);
       transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
@@ -101,7 +106,7 @@
       outline-offset: 3px;
     }
 
-    /* Header brand logo */
+    /* Brand logo in header */
     .brand img.brand-logo {
       height: 22px;
       width: auto;
@@ -112,9 +117,11 @@
 
 <body>
   <header class="topbar">
-    <!-- Brand logo instead of text -->
     <div class="brand">
-      <img class="brand-logo" src="carhartt-logo.png" alt="Carhartt" onerror="this.style.display='none'; this.parentElement.textContent='carhartt';" />
+      <img class="brand-logo"
+           src="carhartt-logo.png"
+           alt="Carhartt"
+           onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'carhartt'}));">
     </div>
 
     <nav class="menu">
@@ -129,36 +136,34 @@
       <a href="#">SALE</a>
       <a href="#">LEARN</a>
 
-      <!-- No longer triggers the modal -->
+      <!-- No longer triggers scanner -->
       <a href="#" class="scan-link" id="my-product-link">My Product</a>
     </nav>
   </header>
 
-  <!-- Visual hero area (background image handled by body) -->
+  <!-- Hero now mainly provides the background "stage" -->
   <main class="hero">
     <div class="overlay">
-      <!-- Intentionally minimal; messaging moved into the panel below -->
+      <!-- ✅ Panel moved into TOP section of the page -->
+      <section class="info-panel" aria-label="Product scan panel">
+        <div class="info-panel__inner">
+          <h1 class="info-panel__title">
+            <span>Congratulations on Purchasing your Authentic Carhartt Apparel.</span>
+          </h1>
+          <p class="info-panel__subtitle">
+            Use the button below to find out more about your Carhartt product.
+          </p>
+
+          <div class="info-panel__actions">
+            <!-- Keep id="scan-link" so your existing app.js click handler still works -->
+            <button id="scan-link" class="scan-cta-btn" type="button">
+              Scan Product
+            </button>
+          </div>
+        </div>
+      </section>
     </div>
   </main>
-
-  <!-- Encapsulated panel/table with header-bar background + black text -->
-  <section class="info-panel" aria-label="Product scan panel">
-    <div class="info-panel__inner">
-      <h1 class="info-panel__title">
-        <span>Congratulations on Purchasing your Authentic Carhartt Apparel.</span>
-      </h1>
-      <p class="info-panel__subtitle">
-        Use the button below to find out more about your Carhartt product.
-      </p>
-
-      <div class="info-panel__actions">
-        <!-- Keep id="scan-link" so your existing app.js click handler still works -->
-        <button id="scan-link" class="scan-cta-btn" type="button">
-          Scan Product
-        </button>
-      </div>
-    </div>
-  </section>
 
   <!-- Scanner Modal with tabs (Camera vs 2D Scanner) -->
   <div id="scannerModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="scannerTitle">
