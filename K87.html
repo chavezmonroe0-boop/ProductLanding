@@ -1,51 +1,4 @@
-<!doctype html>    <div class="brand">
-      <a href="index.html" style="text-decoration:none; color:inherit;">carhartt</a>
-    </div>
-    <nav class="menu">
-      <a href="index.html">Home</a>
-    </nav>
-  </header>
-
-  <main style="padding-top:72px; max-width: 980px; margin: 0 auto; padding-left:16px; padding-right:16px;">
-    <!-- These IDs are required by your product-page.js -->
-    <h1 id="productTitle">Loading…</h1>
-    <p id="productMeta"></p>
-
-    <div style="display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start; margin-top: 16px;">
-      <div style="flex: 0 0 320px; max-width: 100%;">
-    </div>
-
-                  <!-- added so image looks correct 3-25-26 at 10:16pm --> 
-                                    
-            <div class="text-bg" style="flex: 0 0 320px; max-width: 100%;">
-              <img id="productImage" alt="Product image" style="width:100%; border-radius:6px;" />
-            </div>
-                   <h2>Details</h2>            
-           <!--  <div class="text-bg" style="flex: 1 1 320px; min-width: 280px;"> --> 
-               <div class="text-bg" style="flex: 0 0 320px; max-width: 100%;"> --> 
-
-                 
-        
-
-      <!-- <div style="margin-top:12px;"> --> 
-          <div><strong>Materials:</strong> <span id="materials"></span></div>
-          <div><strong>Care:</strong> <span id="care"></span></div>
-          <div><strong>COO:</strong> <span id="coo"></span></div>
-          <div><strong>PO:</strong> <span id="po"></span></div>
-          <div><strong>Style:</strong> <span id="style"></span></div>
-          <div><strong>Description:</strong> <span id="description"></span></div>
-
-        </div>
-
-    <!-- Your product-page.js uses this ID for errors -->
-    <p id="pageError" class="hidden" style="margin-top: 16px; color:#b00020;"></p>
-
-    <!-- Optional debug dump (uncomment if needed) -->
-    <!-- <pre id="recordDump" style="margin-top:16px; background:#f6f6f6; padding:12px; border-radius:6px; overflow:auto;"></pre> -->
-  </main>
-</body>
-</html>
-``
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -53,10 +6,170 @@
   <title>K87 Product Details</title>
 
   <link rel="stylesheet" href="styles.css" />
-
-  <!-- Populate this page from data/products.json -->
   <script defer src="product-page.js"></script>
+
+  <style>
+    /* Full-page background like your index approach */
+    html, body { height: 100%; }
+    body {
+      background: #000 url("backgroundlp.png") center/cover no-repeat fixed;
+      padding-top: 56px; /* fixed header height from styles.css */
+    }
+
+    /* Hide header scrollbars while still allowing horizontal scroll on small screens */
+    .menu { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+    .menu::-webkit-scrollbar { height: 0; }
+
+    /* Logo sizing */
+    .brand a { display: inline-flex; align-items: center; }
+    .brand img { height: 22px; width: auto; display: block; }
+
+    /* Pipe separator */
+    .menu .menu-sep {
+      color: #111;
+      opacity: 0.35;
+      padding: 0 10px;
+      user-select: none;
+      line-height: 1;
+    }
+
+    /* ---- Responsive Product Layout ---- */
+    .product-wrap {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 18px 16px 48px;
+      color: #fff;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.55);
+    }
+
+    .product-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .card {
+      background: rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+
+    #productImage {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.85);
+      display: block;
+      object-fit: cover;
+    }
+
+    .title {
+      margin: 0 0 8px;
+      font-size: clamp(22px, 4vw, 34px);
+      line-height: 1.1;
+    }
+
+    .meta {
+      margin: 0 0 12px;
+      opacity: 0.95;
+      font-size: 14px;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 10px 12px;
+      margin-top: 10px;
+    }
+    .details-grid .k {
+      font-weight: 800;
+      opacity: 0.95;
+    }
+    .details-grid .v {
+      opacity: 0.95;
+      word-break: break-word;
+    }
+
+    /* Error block (product-page.js uses #pageError) */
+    .hidden { display: none; }
+    #pageError {
+      margin-top: 10px;
+      font-weight: 800;
+      color: #ffb4b4;
+    }
+
+    /* ---- Mobile adjustments ---- */
+    @media (max-width: 820px) {
+      .product-layout {
+        grid-template-columns: 1fr;
+      }
+
+      /* Put image first on mobile */
+      .image-card { order: 0; }
+      .info-card { order: 1; }
+
+      .details-grid {
+        grid-template-columns: 95px 1fr;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <!-- Header matches your index menu style (logo + nav + | + My Product) -->
   <header class="topbar">
+    <div class="brand">
+      <a href="index.html" aria-label="Home">
+        <img src="carhartt-logo.png" alt="Carhartt" />
+      </a>
+    </div>
+
+    <nav class="menu">
+      <a href="#">New</a>
+      <a href="#">Featured</a>
+      <a href="#">Men</a>
+      <a href="#">Women</a>
+      <a href="#">Kids</a>
+      <a href="#">Scrubs</a>
+      <a href="#">Boots</a>
+      <a href="#">Accesories</a>
+      <a href="#">Sale</a>
+      <a href="#">Learn</a>
+
+      <span class="menu-sep" aria-hidden="true">|</span>
+      <a href="index.html">My Product</a>
+    </nav>
+  </header>
+
+  <main class="product-wrap">
+    <div class="product-layout">
+      <!-- Info / Details -->
+      <section class="card info-card">
+        <h1 id="productTitle" class="title">Loading…</h1>
+        <p id="productMeta" class="meta"></p>
+
+        <h3 style="margin: 10px 0 8px;">Details</h3>
+        <div class="details-grid">
+          <div class="k">Materials:</div><div class="v" id="materials"></div>
+          <div class="k">Care:</div><div class="v" id="care"></div>
+          <div class="k">COO:</div><div class="v" id="coo"></div>
+          <div class="k">PO:</div><div class="v" id="po"></div>
+          <div class="k">Style:</div><div class="v" id="style"></div>
+          <div class="k">Description:</div><div class="v" id="description"></div>
+        </div>
+
+        <p id="pageError" class="hidden"></p>
+        <pre id="recordDump" class="hidden"></pre>
+      </section>
+
+      <!-- Image -->
+      <aside class="card image-card">
+        <img id="productImage" alt="Product image" />
+      </aside>
+    </div>
+  </main>
+</body>
+</html>
+``
