@@ -3,15 +3,102 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Hackathon2026</title>
+  <title>Spring Into Action</title>
+
   <link rel="stylesheet" href="styles.css" />
+
+  <!-- Small overrides to meet your new layout goals without editing styles.css -->
+  <style>
+    /* 3) Full-page background instead of banner-only */
+    html, body {
+      height: 100%;
+    }
+    body {
+      /* Use the same background image as before, but apply it to the whole page */
+      background: #000 url("Carhartt page.png") center/cover no-repeat fixed;
+    }
+    /* Make the hero transparent so the body background shows through everywhere */
+    .hero {
+      background: transparent !important;
+      min-height: 80vh; /* still gives a strong hero section */
+      height: auto;
+    }
+
+    /* 1) New scan section below hero */
+    .scan-cta-section {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 16px 56px;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* 1a) Larger, more modern scan button */
+    #scan-link.scan-cta-btn {
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 16px 26px;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      cursor: pointer;
+
+      /* modern look */
+      background: linear-gradient(180deg, #ffcc33 0%, #ffbf00 100%);
+      color: #111;
+      box-shadow:
+        0 10px 24px rgba(0,0,0,0.35),
+        0 2px 0 rgba(255,255,255,0.35) inset;
+      transform: translateY(0);
+      transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
+    }
+    #scan-link.scan-cta-btn:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 14px 30px rgba(0,0,0,0.40),
+        0 2px 0 rgba(255,255,255,0.35) inset;
+      filter: brightness(1.02);
+    }
+    #scan-link.scan-cta-btn:active {
+      transform: translateY(1px);
+      box-shadow:
+        0 8px 18px rgba(0,0,0,0.35),
+        0 1px 0 rgba(255,255,255,0.30) inset;
+    }
+    #scan-link.scan-cta-btn:focus-visible {
+      outline: 3px solid rgba(255, 191, 0, 0.65);
+      outline-offset: 3px;
+    }
+
+    /* 2) Brand logo in the header */
+    .brand img.brand-logo {
+      height: 22px;
+      width: auto;
+      display: block;
+    }
+
+    /* Optional: if your logo is dark, uncomment to add subtle contrast */
+    /* .topbar { background: rgba(255,255,255,0.95); } */
+  </style>
+
   <script defer src="https://cdn.jsdelivr.net/npm/zxing-wasm@2.2.1/dist/iife/reader/index.js"></script>
   <script defer src="gs1.js"></script>
   <script defer src="app.js"></script>
 </head>
+
 <body>
   <header class="topbar">
-    <div class="brand">carhartt</div>
+    <!-- 2) Replace text brand with repo image -->
+    <div class="brand">
+      <img
+        src="carhartt-logo.png"
+        alt="Carhartt"
+        class="brand-logo"
+        onerror="this.style.display='none'; this.parentElement.textContent='carhartt';"
+      />
+    </div>
+
     <nav class="menu">
       <a href="#">NEW</a>
       <a href="#">FEATURED</a>
@@ -24,32 +111,30 @@
       <a href="#">SALE</a>
       <a href="#">LEARN</a>
 
-      <!-- Scanner is no longer launched from the header.
-           Keep a normal header link if you want, but NOT id="scan-link". -->
-      <a href="#" class="scan-link" id="my-product-link">My Product</a>
+      <!-- Scanner is no longer launched from the header link -->
+      <a class="scan-link" href="#" id="my-product-link">My Product</a>
     </nav>
   </header>
 
   <main class="hero">
     <div class="overlay">
       <h1><span>Congratulations on Purchasing your Authentic Carhartt Apparel.</span></h1>
-      <p>Use the button below to find out more about your Carhartt product.</p>
+      <p>Use the links below to find out more about your Carhartt product.</p>
 
-      <!-- NEW: Replaces the old info-links area with a Scan button -->
-      <div style="margin-top: 28px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-        <button id="scan-link" class="btn" type="button">Scan Product</button>
-        <span style="color:#fff; opacity:.95; font-size:14px;">
-          Scan a GS1 DataMatrix (camera) or use a handheld 2D scanner.
-        </span>
-      </div>
-    </div>
-  </main>
+  <!-- 1) Scan button moved BELOW the hero -->
+  <section class="scan-cta-section" aria-label="Scan product section">
+    <!-- Keep id="scan-link" so your existing app.js click handler still works -->
+    <button id="scan-link" class="scan-cta-btn" type="button">
+      Scan Product
+    </button>
+  </section>
 
   <!-- Scanner Modal with tabs (Camera vs 2D Scanner) -->
   <div id="scannerModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="scannerTitle">
     <div class="modal-content">
       <button class="close" id="closeModal" aria-label="Close">×</button>
       <h2 id="scannerTitle">Scan GS1 DataMatrix</h2>
+
       <div class="tabs">
         <button class="tab active" data-tab="cameraTab">Use Camera</button>
         <button class="tab" data-tab="hidTab">Use 2D Scanner</button>
@@ -133,7 +218,6 @@
     </div>
   </div>
 
-  <!-- Background image: place your file named exactly 'Carhartt page.png' next to index.html -->
 </body>
 </html>
 ``
