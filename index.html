@@ -6,97 +6,115 @@
   <title>Hackathon 2026</title>
 
   <link rel="stylesheet" href="styles.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/zxing-wasm@2.2.1/dist/iife/reader/index.js"></script>
+  <script defer src="gs1.js"></script>
+  <script defer src="app.js"></script>
 
-  <!-- Small overrides to meet your new layout goals without editing styles.css -->
+  <!-- Page-specific layout tweaks (no need to edit styles.css) -->
   <style>
-    /* 3) Full-page background instead of banner-only */
-    html, body {
-      height: 100%;
-    }
+    /* Full-page background image (instead of banner-only hero background) */
+    html, body { height: 100%; }
     body {
-      /* Use the same background image as before, but apply it to the whole page */
       background: #000 url("backgroundlp.png") center/cover no-repeat fixed;
     }
-    /* Make the hero transparent so the body background shows through everywhere */
+
+    /* Let the body background show through everywhere */
     .hero {
       background: transparent !important;
-      min-height: 80vh; /* still gives a strong hero section */
-      height: auto;
+      height: 72vh;
+      min-height: 520px;
     }
 
-    /* 1) New scan section below hero */
-    .scan-cta-section {
+    /* Optional: keep the existing overlay spacing, but remove white text dependence */
+    .hero .overlay {
+      padding-top: 18vh;
+    }
+
+    /* Encapsulated "table/card" panel that matches the topbar look */
+    .info-panel {
       max-width: 960px;
-      margin: 0 auto;
-      padding: 24px 16px 56px;
-      display: flex;
-      justify-content: center;
+      margin: -64px auto 56px; /* pull up slightly into hero area */
+      padding: 0 16px;
+      position: relative;
+      z-index: 2;
     }
 
-    /* 1a) Larger, more modern scan button */
+    .info-panel__inner {
+      background: rgba(255,255,255,.92);           /* same as .topbar */
+      backdrop-filter: saturate(180%) blur(6px);   /* same as .topbar */
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 14px;
+      padding: 22px 20px;
+      color: #111; /* black text */
+      box-shadow: 0 16px 40px rgba(0,0,0,0.25);
+    }
+
+    .info-panel__title {
+      margin: 0 0 10px;
+      font-size: clamp(22px, 3vw, 34px);
+      line-height: 1.15;
+      letter-spacing: .2px;
+    }
+
+    .info-panel__subtitle {
+      margin: 0 0 18px;
+      font-size: 15px;
+      color: rgba(17,17,17,.85);
+    }
+
+    .info-panel__actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* Modern, larger scan button (black text) */
     #scan-link.scan-cta-btn {
       appearance: none;
       border: 0;
       border-radius: 999px;
-      padding: 16px 26px;
+      padding: 16px 28px;
       font-size: 16px;
       font-weight: 800;
-      letter-spacing: 0.2px;
       cursor: pointer;
-
-      /* modern look */
-      background: linear-gradient(180deg, #ffcc33 0%, #ffbf00 100%);
       color: #111;
-      box-shadow:
-        0 10px 24px rgba(0,0,0,0.35),
-        0 2px 0 rgba(255,255,255,0.35) inset;
-      transform: translateY(0);
+
+      background: linear-gradient(180deg, #ffcc33 0%, #ffbf00 100%);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.22);
       transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
     }
+
     #scan-link.scan-cta-btn:hover {
       transform: translateY(-1px);
-      box-shadow:
-        0 14px 30px rgba(0,0,0,0.40),
-        0 2px 0 rgba(255,255,255,0.35) inset;
+      box-shadow: 0 14px 30px rgba(0,0,0,0.26);
       filter: brightness(1.02);
     }
+
     #scan-link.scan-cta-btn:active {
       transform: translateY(1px);
-      box-shadow:
-        0 8px 18px rgba(0,0,0,0.35),
-        0 1px 0 rgba(255,255,255,0.30) inset;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.20);
     }
+
     #scan-link.scan-cta-btn:focus-visible {
-      outline: 3px solid rgba(255, 191, 0, 0.65);
+      outline: 3px solid rgba(255,191,0,.55);
       outline-offset: 3px;
     }
 
-    /* 2) Brand logo in the header */
+    /* Header brand logo */
     .brand img.brand-logo {
       height: 22px;
       width: auto;
       display: block;
     }
-
-    /* Optional: if your logo is dark, uncomment to add subtle contrast */
-    /* .topbar { background: rgba(255,255,255,0.95); } */
   </style>
-
-  <script defer src="https://cdn.jsdelivr.net/npm/zxing-wasm@2.2.1/dist/iife/reader/index.js"></script>
-  <script defer src="gs1.js"></script>
-  <script defer src="app.js"></script>
 </head>
 
 <body>
   <header class="topbar">
-    <!-- 2) Replace text brand with repo image -->
+    <!-- Brand logo instead of text -->
     <div class="brand">
-      <img
-        src="carhartt-logo.png"
-        alt="Carhartt"
-        class="brand-logo"
-        onerror="this.style.display='none'; this.parentElement.textContent='carhartt';"
-      />
+      <img class="brand-logo" src="carhartt-logo.png" alt="Carhartt" onerror="this.style.display='none'; this.parentElement.textContent='carhartt';" />
     </div>
 
     <nav class="menu">
@@ -111,22 +129,35 @@
       <a href="#">SALE</a>
       <a href="#">LEARN</a>
 
-      <!-- Scanner is no longer launched from the header link -->
-      <a class="scan-link" href="#" id="my-product-link">My Product</a>
+      <!-- No longer triggers the modal -->
+      <a href="#" class="scan-link" id="my-product-link">My Product</a>
     </nav>
   </header>
 
+  <!-- Visual hero area (background image handled by body) -->
   <main class="hero">
     <div class="overlay">
-      <h1><span>Congratulations on Purchasing your Authentic Carhartt Apparel.</span></h1>
-      <p>Use the button below to find out more about your Carhartt product.</p>
+      <!-- Intentionally minimal; messaging moved into the panel below -->
+    </div>
+  </main>
 
-  <!-- 1) Scan button moved BELOW the hero -->
-  <section class="scan-cta-section" aria-label="Scan product section">
-    <!-- Keep id="scan-link" so your existing app.js click handler still works -->
-    <button id="scan-link" class="scan-cta-btn" type="button">
-      Scan Product
-    </button>
+  <!-- Encapsulated panel/table with header-bar background + black text -->
+  <section class="info-panel" aria-label="Product scan panel">
+    <div class="info-panel__inner">
+      <h1 class="info-panel__title">
+        <span>Congratulations on Purchasing your Authentic Carhartt Apparel.</span>
+      </h1>
+      <p class="info-panel__subtitle">
+        Use the button below to find out more about your Carhartt product.
+      </p>
+
+      <div class="info-panel__actions">
+        <!-- Keep id="scan-link" so your existing app.js click handler still works -->
+        <button id="scan-link" class="scan-cta-btn" type="button">
+          Scan Product
+        </button>
+      </div>
+    </div>
   </section>
 
   <!-- Scanner Modal with tabs (Camera vs 2D Scanner) -->
@@ -220,3 +251,4 @@
 
 </body>
 </html>
+``
