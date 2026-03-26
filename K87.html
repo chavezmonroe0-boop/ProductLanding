@@ -1,4 +1,47 @@
-<!doctype html>
+<!doctype html>    <div class="brand">
+      <a href="index.html" style="text-decoration:none; color:inherit;">carhartt</a>
+    </div>
+    <nav class="menu">
+      <a href="index.html">Home</a>
+    </nav>
+  </header>
+
+  <main style="padding-top:72px; max-width: 980px; margin: 0 auto; padding-left:16px; padding-right:16px;">
+    <!-- These IDs are required by your product-page.js -->
+    <h1 id="productTitle">Loading…</h1>
+    <p id="productMeta"></p>
+
+    <div style="display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start; margin-top: 16px;">
+      <div style="flex: 0 0 320px; max-width: 100%;">
+        <img id="productImage" alt="Product image" style="width:100%; border-radius:6px; background:#f2f2f2;" />
+      </div>
+             <!-- removed to add black backing against text --> 
+    <!--  <div style="flex: 1 1 320px; min-width: 280px;"> -->
+            <!-- Added 3-25-26 at 8:47pmCST --> 
+            <div class="text-bg" style="flex: 1 1 320px; min-width: 280px;">
+
+          
+        <h2>Details</h2>
+
+        <div style="margin-top:12px;">
+          <div><strong>Materials:</strong> <span id="materials"></span></div>
+          <div><strong>Care:</strong> <span id="care"></span></div>
+          <div><strong>COO:</strong> <span id="coo"></span></div>
+          <div><strong>PO:</strong> <span id="po"></span></div>
+          <div><strong>Style:</strong> <span id="style"></span></div>
+          <div><strong>Description:</strong> <span id="description"></span></div>
+
+        </div>
+
+    <!-- Your product-page.js uses this ID for errors -->
+    <p id="pageError" class="hidden" style="margin-top: 16px; color:#b00020;"></p>
+
+    <!-- Optional debug dump (uncomment if needed) -->
+    <!-- <pre id="recordDump" style="margin-top:16px; background:#f6f6f6; padding:12px; border-radius:6px; overflow:auto;"></pre> -->
+  </main>
+</body>
+</html>
+``
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -6,153 +49,10 @@
   <title>K87 Product Details</title>
 
   <link rel="stylesheet" href="styles.css" />
+
+  <!-- Populate this page from data/products.json -->
   <script defer src="product-page.js"></script>
-
-  <!-- Match index.html background + small page layout helpers -->
-  <style>
-    /* --- Match index.html full-page background --- */
-    html, body { height: 100%; }
-    body {
-      background: #000 url("backgroundlp.png") center/cover no-repeat fixed;
-    }
-
-    /* Header logo sizing (same pattern you used on index) */
-    .brand a { display: inline-flex; align-items: center; }
-    .brand img.brand-logo {
-      height: 22px;
-      width: auto;
-      display: block;
-    }
-
-    /* Optional: hide header scrollbars if they appear */
-    .menu { overflow-y: hidden; scrollbar-width: none; }
-    .menu::-webkit-scrollbar { height: 0; }
-
-    /* Pipe separator styling */
-    .menu .menu-sep {
-      color: #111;
-      opacity: 0.35;
-      padding: 0 10px;
-      user-select: none;
-      line-height: 1;
-    }
-
-    /* Page layout under fixed header */
-    .page-wrap {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 88px 16px 48px; /* 56px header + spacing */
-    }
-
-    /* Frosted “card” look that reads well on the photo background */
-    .card {
-      background: rgba(255,255,255,.92);
-      backdrop-filter: saturate(180%) blur(6px);
-      border: 1px solid rgba(0,0,0,.08);
-      border-radius: 14px;
-      padding: 18px 18px;
-      box-shadow: 0 16px 40px rgba(0,0,0,0.20);
-    }
-
-    .product-grid {
-      display: grid;
-      grid-template-columns: 1fr 320px;
-      gap: 22px;
-      align-items: start;
-    }
-    @media (max-width: 900px) {
-      .product-grid { grid-template-columns: 1fr; }
-    }
-
-    .product-image {
-      width: 100%;
-      height: auto;
-      border-radius: 12px;
-      border: 1px solid rgba(0,0,0,.08);
-      background: #fff;
-      object-fit: cover;
-    }
-
-    .details dl {
-      margin: 0;
-      display: grid;
-      grid-template-columns: 140px 1fr;
-      row-gap: 10px;
-      column-gap: 12px;
-    }
-    .details dt { font-weight: 800; }
-    .details dd { margin: 0; }
-
-    /* Error block (matches your product-page.js behavior) */
-    .hidden { display: none; }
-    #pageError {
-      color: #b00020;
-      font-weight: 700;
-      margin: 10px 0 0;
-    }
-  </style>
 </head>
 
 <body>
-  <!-- Header bar: same structure/classes as index.html -->
   <header class="topbar">
-    <div class="brand">
-      <a href="index.html" aria-label="Home">
-        <img class="brand-logo" src="carhartt-logo.png" alt="Carhartt" />
-      </a>
-    </div>
-
-    <nav class="menu">
-      <a href="#">New</a>
-      <a href="#">Featured</a>
-      <a href="#">Men</a>
-      <a href="#">Women</a>
-      <a href="#">Kids</a>
-      <a href="#">Scrubs</a>
-      <a href="#">Boots</a>
-      <a href="#">Accessories</a>
-      <a href="#">Sale</a>
-      <a href="#">Learn</a>
-
-      <span class="menu-sep" aria-hidden="true">|</span>
-      <a href="index.html">My Product</a>
-    </nav>
-  </header>
-
-  <main class="page-wrap">
-    <div class="product-grid">
-      <!-- Left: Title + Details -->
-      <section class="card">
-        <h1 id="productTitle">Loading…</h1>
-        <p id="productMeta"></p>
-
-        <p id="pageError" class="hidden"></p>
-
-        <div class="details">
-          <h2>Details</h2>
-          <dl>
-            <dt>Materials:</dt><dd id="materials"></dd>
-            <dt>Care:</dt><dd id="care"></dd>
-            <dt>COO:</dt><dd id="coo"></dd>
-            <dt>PO:</dt><dd id="po"></dd>
-            <dt>Style:</dt><dd id="style"></dd>
-            <dt>Description:</dt><dd id="description"></dd>
-          </dl>
-        </div>
-
-        <!-- Optional debug: product-page.js will fill recordDump if present -->
-        <details style="margin-top:14px;">
-          <summary>Debug</summary>
-          <pre id="recordDump" style="white-space:pre-wrap;"></pre>
-        </details>
-      </section>
-
-      <!-- Right: Image -->
-      <aside class="card">
-        <img id="productImage" class="product-image" alt="Product image" />
-      </aside>
-    </div>
-  </main>
-</body>
-</html>
-``
