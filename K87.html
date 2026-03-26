@@ -114,6 +114,58 @@
         grid-template-columns: 95px 1fr;
       }
     }
+
+    /* Make the details grid look like a table (grid lines + aligned rows) */
+.details-grid {
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 10px;
+  overflow: hidden; /* ensures borders stay clean with rounded corners */
+}
+
+/* Style each cell */
+.details-grid > .k,
+.details-grid > .v {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.14);
+  line-height: 1.25;
+  align-self: stretch; /* ensures both cells fill row height */
+}
+
+/* Remove bottom border from the last row’s two cells */
+.details-grid > div:nth-last-child(-n+2) {
+  border-bottom: none;
+}
+
+/* Vertical divider between label and value columns */
+.details-grid > div:nth-child(odd) {
+  border-right: 1px solid rgba(255,255,255,0.14);
+}
+
+/* Subtle shading for the label column to help tracking across rows */
+.details-grid > .k {
+  background: rgba(255,255,255,0.06);
+  font-weight: 800;
+}
+
+/* Optional: make values slightly easier to read */
+.details-grid > .v {
+  background: rgba(0,0,0,0.08);
+}
+
+    
+/* Desktop: wider label column */
+.details-grid {
+  grid-template-columns: 150px 1fr;
+}
+
+/* Mobile: slightly narrower but still readable */
+@media (max-width: 820px) {
+  .details-grid {
+    grid-template-columns: 120px 1fr;
+  }
+}
+
+    
   </style>
 </head>
 
@@ -154,8 +206,8 @@
         <div class="details-grid">
           <div class="k">Materials:</div><div class="v" id="materials"></div>
           <div class="k">Care:</div><div class="v" id="care"></div>
-          <div class="k">COO:</div><div class="v" id="coo"></div>
-          <div class="k">PO:</div><div class="v" id="po"></div>
+          <div class="k">Country of Origin:</div><div class="v" id="coo"></div>
+          <div class="k">Purchase Order:</div><div class="v" id="po"></div>
           <div class="k">Style:</div><div class="v" id="style"></div>
           <div class="k">Description:</div><div class="v" id="description"></div>
         </div>
