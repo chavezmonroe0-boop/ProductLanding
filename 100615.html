@@ -151,6 +151,20 @@
 .details-grid > .v {
   background: rgba(0,0,0,0.08);
 }
+
+    
+/* Desktop: wider label column */
+.details-grid {
+  grid-template-columns: 150px 1fr;
+}
+
+/* Mobile: slightly narrower but still readable */
+@media (max-width: 820px) {
+  .details-grid {
+    grid-template-columns: 120px 1fr;
+  }
+}
+
     
   </style>
 </head>
