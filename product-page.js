@@ -131,4 +131,3 @@ window.addEventListener("DOMContentLoaded", async () => {
     showError(e?.message || "Unable to load product data.");
   }
 });
-``
