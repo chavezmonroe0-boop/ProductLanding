@@ -9,7 +9,7 @@
     "image": "K87.png",
     "meta": "Information about your Carhartt K87 can be found below",
     "fields": {
-      "materials": "100% cotton jersey knit",
+      "materials": "100% Cotton Jersey Knit",
       "care": "Machine wash warm with like colors. Non-Chlorine bleach when needed. Tumble dry medium, remove promptly",
       "coo": "Pakistan",
       "po": "3510051489",
@@ -25,12 +25,27 @@
     "image": "100615.png",
     "meta": "Information about your Carhartt 100615 can be found below",
     "fields": {
-      "materials": "75% cotton / 25% polyester (example)",
-      "care": "Tumble dry low (example)",
-      "coo": "?",
+      "materials": "55% Cotton 45% Polyster Knit Fleeced",
+      "care": "Machine wash cold gentle cycle with mild detergent. Do not bleach. Tumble dry low remove promptly. Do not iron. Do not dry clean.",
+      "coo": "VN",
       "po": "3510042476",
       "style": "100615 Black Regular Large",
-      "description": "Rain Defender Hooded Sweatshirt"
+      "description": "Paxton Sweatshirt"
+    }
+    {
+    "id": "100615",
+    "page": "100615.html",
+    "key": "00886859298337|3510042478",
+    "title": "Your Authentic Carhartt Apparel",
+    "image": "100615.png",
+    "meta": "Information about your Carhartt 100615 can be found below",
+    "fields": {
+      "materials": "75% Cotton 25% Polyster Knit Fleeced",
+      "care": "Machine wash cold gentle cycle with mild detergent. Do not bleach. Tumble dry low remove promptly. Do not iron. Do not dry clean.",
+      "coo": "MX",
+      "po": "3510042477",
+      "style": "100615 Black Regular Large",
+      "description": "Paxton Sweatshirt"
     }
   }
 ]
