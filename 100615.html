@@ -114,6 +114,44 @@
         grid-template-columns: 95px 1fr;
       }
     }
+
+    /* Make the details grid look like a table (grid lines + aligned rows) */
+.details-grid {
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 10px;
+  overflow: hidden; /* ensures borders stay clean with rounded corners */
+}
+
+/* Style each cell */
+.details-grid > .k,
+.details-grid > .v {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.14);
+  line-height: 1.25;
+  align-self: stretch; /* ensures both cells fill row height */
+}
+
+/* Remove bottom border from the last row’s two cells */
+.details-grid > div:nth-last-child(-n+2) {
+  border-bottom: none;
+}
+
+/* Vertical divider between label and value columns */
+.details-grid > div:nth-child(odd) {
+  border-right: 1px solid rgba(255,255,255,0.14);
+}
+
+/* Subtle shading for the label column to help tracking across rows */
+.details-grid > .k {
+  background: rgba(255,255,255,0.06);
+  font-weight: 800;
+}
+
+/* Optional: make values slightly easier to read */
+.details-grid > .v {
+  background: rgba(0,0,0,0.08);
+}
+    
   </style>
 </head>
 
