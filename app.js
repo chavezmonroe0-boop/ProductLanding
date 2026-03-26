@@ -69,7 +69,7 @@ function normalizeGTIN(v) {
 
 function normalizePO(v) {
   return String(v || "")
-    .replace(/[()]/g, "")          // remove parentheses if present
+    .replace(/[()]/g, "")  // strip parentheses
     .trim()
     .toUpperCase();
 }
@@ -93,22 +93,18 @@ function setStatus(el, msg) {
 
 async function lookupAndRedirect(parsed) {
   await loadProductTable();
-
   const { gtin, po, key } = buildKeyFromParsed(parsed);
 
   if (!gtin || gtin.length !== 14) throw new Error("Invalid/missing GTIN (AI 01).");
   if (!po) throw new Error("Missing PO (AI 400).");
 
-  // strict lookup by GTIN|PO (supports multiple rows pointing to same page)
   const rec = productTable.find(r => recordKey(r) === key);
   if (!rec) throw new Error(`No match found for scanned key: ${key}`);
 
   const page = rec.page || "K87.html";
   const id = rec.id || "";
 
-  // Important for duplicates: always include id
   if (!id) throw new Error(`Matched record for ${key} is missing an 'id' field.`);
-
   window.location.href = `${page}?id=${encodeURIComponent(id)}`;
 }
 
@@ -167,7 +163,6 @@ async function startCamera() {
 
     video.srcObject = stream;
     await video.play();
-
     scanning = true;
     setStatus(decodedRaw, "Ready to scan…");
     scanLoop();
@@ -193,7 +188,6 @@ async function scanLoop() {
 
   const vw = video.videoWidth || 1280;
   const vh = video.videoHeight || 720;
-
   const tw = 640;
   const th = Math.round((vh / vw) * tw);
 
@@ -239,7 +233,6 @@ function handleScanText(text) {
     renderDebug(parsed, text, resultTable);
   });
 
-  // Pause briefly to avoid rapid repeats
   scanning = false;
   setTimeout(() => { scanning = true; scanLoop(); }, 1200);
 }
