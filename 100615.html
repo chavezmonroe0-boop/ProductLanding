@@ -5,27 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>100615 Product Details</title>
 
-.js"></script>  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css" />
 
-  <!-- ONLY CHANGE: backgroundlp.png full-page like index + small header helpers -->
+  <!-- Use the product-page script that exists in your repo -->
+  <script defer src="product-page.txt"></script>
+
   <style>
+    /* Full-page background like your index page */
     html, body { height: 100%; }
-
     body {
       background: #000 url("backgroundlp.png") center/cover no-repeat fixed;
-      /* Prevent fixed header from covering the top of the page content */
-      padding-top: 56px;
+      padding-top: 56px; /* fixed header offset */
     }
 
-    /* Logo sizing in header */
+    /* Brand logo sizing */
     .brand a { display: inline-flex; align-items: center; }
-    .brand img.brand-logo {
-      height: 22px;
-      width: auto;
-      display: block;
-    }
+    .brand img { height: 22px; width: auto; display: block; }
 
-    /* Optional separator pipe styling (matches your index header intent) */
+    /* --- Fix header scrollbars caused by .menu { overflow-x:auto } in styles.css --- */
+    .menu { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+    .menu::-webkit-scrollbar { height: 0; }
+
+    /* Pipe separator */
     .menu .menu-sep {
       color: #111;
       opacity: 0.35;
@@ -33,15 +34,45 @@
       user-select: none;
       line-height: 1;
     }
+
+    /* Keep your existing page content simple (no redesign) */
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 18px 16px 48px;
+      color: #fff; /* readable over background */
+      text-shadow: 0 2px 6px rgba(0,0,0,0.55);
+    }
+
+    /* Optional: make the details block readable */
+    .details-box {
+      background: rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 14px 16px;
+      max-width: 560px;
+    }
+
+    img#productImage {
+      max-width: 360px;
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.85);
+      display: block;
+      margin-top: 12px;
+    }
+
+    .hidden { display: none; }
   </style>
 </head>
 
 <body>
-  <!-- UPDATED HEADER to match your latest index.txt menu -->
+  <!-- Header matches your latest index menu (no SCAN BARCODE in header) -->
   <header class="topbar">
     <div class="brand">
       <a href="index.html" aria-label="Home">
-        <img class="brand-logo" src="carhartt-logo.png" alt="Carhartt" />
+        <img src="carhartt-logo.png" alt="carhartt" />
       </a>
     </div>
 
@@ -62,31 +93,26 @@
     </nav>
   </header>
 
-  <!-- ORIGINAL PAGE CONTENT (left as-is) -->
-  <main style="max-width: 960px; margin: 0 auto; padding: 18px 16px 48px;">
-    <p>
-      <a href="index.html">carhartt</a>
-      <a href="index.html">Home</a>
-    </p>
+  <!-- Leave the body layout simple; product-page.txt will populate these IDs -->
+  <main>
+    <h2 id="productTitle">Loading…</h2>
+    <p id="productMeta"></p>
 
-    <h2>Loading…</h2>
-
-    <p>Product image</p>
+    <img id="productImage" alt="Product image" />
 
     <h3>Details</h3>
+    <div class="details-box">
+      <p><strong>Materials:</strong> <span id="materials"></span></p>
+      <p><strong>Care:</strong> <span id="care"></span></p>
+      <p><strong>COO:</strong> <span id="coo"></span></p>
+      <p><strong>PO:</strong> <span id="po"></span></p>
+      <p><strong>Style:</strong> <span id="style"></span></p>
+      <p><strong>Description:</strong> <span id="description"></span></p>
+    </div>
 
-    <p><strong>Materials:</strong> <span id="materials"></span></p>
-    <p><strong>Care:</strong> <span id="care"></span></p>
-    <p><strong>COO:</strong> <span id="coo"></span></p>
-    <p><strong>PO:</strong> <span id="po"></span></p>
-    <p><strong>Style:</strong> <span id="style"></span></p>
-    <p><strong>Description:</strong> <span id="description"></span></p>
-
-    <h1>100615 Product Details</h1>
-
-    <!-- Optional helpers if your product-page.js uses them -->
     <p id="pageError" class="hidden"></p>
     <pre id="recordDump" class="hidden"></pre>
   </main>
 </body>
 </html>
+``
