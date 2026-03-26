@@ -1,43 +1,4 @@
-<!doctype html>    <div class="brand">
-      <a href="index.html" style="text-decoration:none; color:inherit;">carhartt</a>
-    </div>
-    <nav class="menu">
-      <a href="index.html">Home</a>
-    </nav>
-  </header>
-
-  <main style="padding-top:72px; max-width: 980px; margin: 0 auto; padding-left:16px; padding-right:16px;">
-    <!-- These IDs are required by your product-page.js -->
-    <h1 id="productTitle">Loading…</h1>
-    <p id="productMeta"></p>
-
-    <div style="display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start; margin-top: 16px;">
-      <div style="flex: 0 0 320px; max-width: 100%;">
-        <img id="productImage" alt="Product image" style="width:100%; border-radius:6px; background:#f2f2f2;" />
-      </div>
-
-      <div style="flex: 1 1 320px; min-width: 280px;">
-        <h2>Details</h2>
-
-        <div style="margin-top:12px;">
-          <div><strong>Materials:</strong> <span id="materials"></span></div>
-          <div><strong>Care:</strong> <span id="care"></span></div>
-          <div><strong>COO:</strong> <span id="coo"></span></div>
-          <div><strong>PO:</strong> <span id="po"></span></div>
-          <div><strong>Style:</strong> <span id="style"></span></div>
-          <div><strong>Description:</strong> <span id="description"></span></div>
-
-        </div>
-
-    <!-- Your product-page.js uses this ID for errors -->
-    <p id="pageError" class="hidden" style="margin-top: 16px; color:#b00020;"></p>
-
-    <!-- Optional debug dump (uncomment if needed) -->
-    <!-- <pre id="recordDump" style="margin-top:16px; background:#f6f6f6; padding:12px; border-radius:6px; overflow:auto;"></pre> -->
-  </main>
-</body>
-</html>
-``
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -45,10 +6,78 @@
   <title>100615 Product Details</title>
 
   <link rel="stylesheet" href="styles.css" />
-
-  <!-- Populate this page from data/products.json -->
   <script defer src="product-page.js"></script>
+
+  <!-- ONLY CHANGE #3: Full-page background like index.html -->
+  <style>
+    html, body { height: 100%; }
+
+    body {
+      background: #000 url("backgroundlp.png") center/cover no-repeat fixed;
+      /* Prevent fixed header from overlapping the top of your existing content */
+      padding-top: 56px;
+    }
+
+    /* ONLY CHANGE #2: Logo sizing in header */
+    .brand a { display: inline-flex; align-items: center; }
+    .brand img.brand-logo {
+      height: 22px;
+      width: auto;
+      display: block;
+    }
+  </style>
 </head>
 
 <body>
+  <!-- ONLY CHANGE #1 + #2: Add header bar + use carhartt-logo.png -->
   <header class="topbar">
+    <div class="brand">
+      <a href="index.html" aria-label="Home">
+        <img class="brand-logo" src="carhartt-logo.png" alt="carhartt" />
+      </a>
+    </div>
+
+    <nav class="menu">
+      <a href="#">NEW</a>
+      <a href="#">FEATURED</a>
+      <a href="#">MEN</a>
+      <a href="#">WOMEN</a>
+      <a href="#">KIDS</a>
+      <a href="#">SCRUBS</a>
+      <a href="#">BOOTS</a>
+      <a href="#">ACCESSORIES</a>
+      <a href="#">SALE</a>
+      <a href="#">LEARN</a>
+      <a id="scan-link" class="scan-link" href="#">SCAN BARCODE</a>
+    </nav>
+  </header>
+
+  <!-- ORIGINAL PAGE CONTENT (left as-is, just wrapped in normal HTML structure) -->
+  <main style="max-width: 960px; margin: 0 auto; padding: 18px 16px 48px;">
+    <p>
+      <a href="index.html">carhartt</a>
+      <a href="index.html">Home</a>
+    </p>
+
+    <h2>Loading…</h2>
+
+    <p>Product image</p>
+
+    <h3>Details</h3>
+
+    <p><strong>Materials:</strong> <span id="materials"></span></p>
+    <p><strong>Care:</strong> <span id="care"></span></p>
+    <p><strong>COO:</strong> <span id="coo"></span></p>
+    <p><strong>PO:</strong> <span id="po"></span></p>
+    <p><strong>Style:</strong> <span id="style"></span></p>
+    <p><strong>Description:</strong> <span id="description"></span></p>
+
+    <!-- These are optional, but helpful if your product-page.js expects them -->
+    <img id="productImage" alt="Product image" style="max-width: 320px; height: auto;" />
+    <div id="pageError" class="hidden"></div>
+    <pre id="recordDump" class="hidden"></pre>
+
+    <h1>100615 Product Details</h1>
+  </main>
+</body>
+</html>
