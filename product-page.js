@@ -70,6 +70,7 @@ function populate(record) {
   setText("po", f.PO ?? f.po);
   setText("style", f.Style ?? f.style);
   setText("description", f.Description ?? f.description);
+  setText("vendor", f.Vendor ?? f.vendor);
 
   const dump = document.getElementById("recordDump");
   if (dump) dump.textContent = JSON.stringify(record, null, 2);
