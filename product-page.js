@@ -1,8 +1,12 @@
 // product-page.js
-// Populates a product page (e.g., K87.html, 100615.html) from data/products.json using ?id=...
+// Populates a product page (e.g., K87.html, 100615.html) from data/products.json
+
+function params() {
+  return new URLSearchParams(window.location.search);
+}
 
 function getParam(name) {
-  return new URLSearchParams(window.location.search).get(name);
+  return params().get(name);
 }
 
 function currentFileName() {
@@ -49,35 +53,32 @@ function showError(msg) {
 }
 
 function populate(record) {
-  // Core
   setText("productTitle", record.title);
   setText("productMeta", record.meta);
   setSrc("productImage", record.image);
 
-  // Debug/identifiers (optional IDs in your HTML)
   setText("productKey", record.key);
   setText("productId", record.id);
 
-  // Fields (support both legacy lower-case and your new Title-Case keys)
   const f = record.fields || {};
 
   setText("materials", f.materials ?? f.Materials);
   setText("care", f.care ?? f.Care);
 
-  // NEW fields in your JSON
+  // supports both cases (COO vs coo etc.)
   setText("coo", f.COO ?? f.coo);
   setText("po", f.PO ?? f.po);
   setText("style", f.Style ?? f.style);
   setText("description", f.Description ?? f.description);
 
-  // Optional raw record dump
   const dump = document.getElementById("recordDump");
   if (dump) dump.textContent = JSON.stringify(record, null, 2);
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
   try {
-    const id = getParam("id");
+    const p = params();
+    const id = p.get("id");
     const filename = currentFileName();
     const table = await loadTable();
 
@@ -94,7 +95,21 @@ window.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // 2) Fallback by page ONLY if unambiguous
+    // 2) If gtin+po are present, match by key
+    const gtin = p.get("01");
+    const po = p.get("400");
+    if (gtin && po) {
+      const key = `${String(gtin).trim()}|${String(po).trim()}`;
+      record = table.find(r => String(r.key || "").trim() === key);
+      if (!record) {
+        showError(`No product record found for key='${key}'.`);
+        return;
+      }
+      populate(record);
+      return;
+    }
+
+    // 3) Fallback by page ONLY if unambiguous
     const matches = table.filter(
       r => String(r.page || "").toLowerCase() === filename.toLowerCase()
     );
