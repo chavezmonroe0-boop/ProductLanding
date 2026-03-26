@@ -23,55 +23,38 @@
       <a href="#">ACCESSORIES</a>
       <a href="#">SALE</a>
       <a href="#">LEARN</a>
-      <a id="scan-link" class="scan-link" href="#">My Product</a>
+
+      <!-- Scanner is no longer launched from the header.
+           Keep a normal header link if you want, but NOT id="scan-link". -->
+      <a href="#" class="scan-link" id="my-product-link">My Product</a>
     </nav>
   </header>
 
-  <main>
+  <main class="hero">
+    <div class="overlay">
+      <h1>TIME TO <span>SPRING INTO ACTION</span></h1>
+      <p>We’ve got the gear you need to turn the season of uncertainty into possibility.</p>
 
-    <!-- TOP HALF IMAGE -->
-    <section class="hero-image"></section>
+      <div class="cta">
+        <button class="btn">Men’s Spring Gear</button>
+        <button class="btn alt">Women’s Spring Gear</button>
+      </div>
 
-    <!-- BOTTOM HALF TEXT -->
-    <section class="hero-text">
-      <h1>Congratulations on Purchasing your Authentic Carhartt Apparel.</h1>
-      <p>Use the links below to find out more about your Carhartt product.</p>
-
-      <ul class="info-links">
-        <li><a href="care.html">Garment Care Instructions</a></li>
-        <li><a href="warranty.html">Warranty & Product Guarantee</a></li>
-        <li><a href="materials.html">Materials & Fabric Details</a></li>
-        <li><a href="sizing.html">Sizing & Fit Guide</a></li>
-        <li><a href="safety.html">Safety & Compliance Information</a></li>
-        <li><a href="sustainability.html">Sustainability & Manufacturing</a></li>
-        <li><a href="contact.html">Customer Support</a></li>
-      </ul>
-    </section>
-
+      <!-- NEW: Replaces the old info-links area with a Scan button -->
+      <div style="margin-top: 28px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <button id="scan-link" class="btn" type="button">Scan Product</button>
+        <span style="color:#fff; opacity:.95; font-size:14px;">
+          Scan a GS1 DataMatrix (camera) or use a handheld 2D scanner.
+        </span>
+      </div>
+    </div>
   </main>
-</body>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
 
   <!-- Scanner Modal with tabs (Camera vs 2D Scanner) -->
   <div id="scannerModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="scannerTitle">
     <div class="modal-content">
       <button class="close" id="closeModal" aria-label="Close">×</button>
       <h2 id="scannerTitle">Scan GS1 DataMatrix</h2>
-
       <div class="tabs">
         <button class="tab active" data-tab="cameraTab">Use Camera</button>
         <button class="tab" data-tab="hidTab">Use 2D Scanner</button>
@@ -83,6 +66,7 @@
             <div class="video-col">
               <video id="video" autoplay playsinline muted></video>
               <canvas id="canvas" class="hidden"></canvas>
+
               <div class="controls">
                 <label>
                   Camera:
@@ -90,44 +74,45 @@
                 </label>
                 <button id="startBtn" class="btn">Start</button>
                 <button id="stopBtn" class="btn alt">Stop</button>
+
                 <label class="file-btn">Upload Image
                   <input type="file" id="fileInput" accept="image/*" />
                 </label>
               </div>
+
               <p class="helper">Tip: Hold steady, fill the frame, and light the code evenly.</p>
             </div>
 
-            <div class="results-layout">
-              <div class="results-left">
-                <div id="decodedRaw"></div>
-                <table id="resultTable"></table>
-            </div>
+            <div class="result-col">
+              <h3>Decoded Data</h3>
+              <div id="decodedRaw" class="raw"></div>
+              <table class="result-table" id="resultTable"></table>
 
-            <div class="results-right">
-              <div id="productCard" class="hidden">
-                <img id="productImage" src="" alt="">
-                <h3 id="productTitle"></h3>
-                <p id="productMeta"></p>
-             </div>
+              <div id="productCard" class="product-card hidden">
+                <div class="product-meta">
+                  <div id="productTitle" class="title"></div>
+                  <div id="productMeta" class="meta"></div>
+                </div>
+                <img id="productImage" alt="Garment" />
+              </div>
             </div>
           </div>
-
-
-
-            
-
-
-          
         </section>
 
         <section id="hidTab" class="tabpane">
           <div class="hid-wrap">
-            <p>Connect a handheld <strong>2D scanner</strong> (keyboard‑wedge/HID mode), focus the box below, then scan. Press <kbd>Enter</kbd> if your device doesn’t auto‑send it.</p>
+            <p>
+              Connect a handheld <strong>2D scanner</strong> (keyboard‑wedge/HID mode), focus the box below, then scan.
+              Press <kbd>Enter</kbd> if your device doesn’t auto‑send it.
+            </p>
+
             <textarea id="hidInput" class="hid-input" rows="4" placeholder="Focus here and scan…"></textarea>
+
             <div class="hid-actions">
               <button id="hidParseBtn" class="btn">Parse Last Scan</button>
               <button id="hidClearBtn" class="btn alt">Clear</button>
             </div>
+
             <details class="helper">
               <summary>Having trouble?</summary>
               <ul>
@@ -135,15 +120,17 @@
                 <li>Most scanners can be configured to transmit GS; some ship it off by default. Check your device manual.</li>
               </ul>
             </details>
+
             <h3>Decoded Data</h3>
             <div id="decodedRawHID" class="raw"></div>
             <table class="result-table" id="resultTableHID"></table>
+
             <div id="productCardHID" class="product-card hidden">
-              <img id="productImageHID" alt="Garment" />
               <div class="product-meta">
                 <div id="productTitleHID" class="title"></div>
                 <div id="productMetaHID" class="meta"></div>
               </div>
+              <img id="productImageHID" alt="Garment" />
             </div>
           </div>
         </section>
@@ -154,3 +141,4 @@
   <!-- Background image: place your file named exactly 'Carhartt page.png' next to index.html -->
 </body>
 </html>
+``
