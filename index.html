@@ -12,6 +12,21 @@
 
   <!-- Page-specific overrides (keeps styles.css intact) -->
   <style>
+
+    
+/* Fix header scrollbars in the nav */
+.menu {
+  overflow-x: auto;     /* keep horizontal scroll capability for small screens */
+  overflow-y: hidden;   /* prevent vertical scrollbar */
+  scrollbar-width: none; /* Firefox: hide scrollbar */
+}
+
+/* Chrome/Edge/Safari: hide scrollbar */
+.menu::-webkit-scrollbar {
+  height: 0;
+}
+
+    
     /* Full-page background image */
     html, body { height: 100%; }
     body {
