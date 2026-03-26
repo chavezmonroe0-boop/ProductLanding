@@ -5,54 +5,64 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>100615 Product Details</title>
 
-  <link rel="stylesheet" href="styles.css" />
-  <script defer src="product-page.js"></script>
+.js"></script>  <link rel="stylesheet" href="styles.css" />
 
-  <!-- ONLY CHANGE #3: Full-page background like index.html -->
+  <!-- ONLY CHANGE: backgroundlp.png full-page like index + small header helpers -->
   <style>
     html, body { height: 100%; }
 
     body {
       background: #000 url("backgroundlp.png") center/cover no-repeat fixed;
-      /* Prevent fixed header from overlapping the top of your existing content */
+      /* Prevent fixed header from covering the top of the page content */
       padding-top: 56px;
     }
 
-    /* ONLY CHANGE #2: Logo sizing in header */
+    /* Logo sizing in header */
     .brand a { display: inline-flex; align-items: center; }
     .brand img.brand-logo {
       height: 22px;
       width: auto;
       display: block;
     }
+
+    /* Optional separator pipe styling (matches your index header intent) */
+    .menu .menu-sep {
+      color: #111;
+      opacity: 0.35;
+      padding: 0 10px;
+      user-select: none;
+      line-height: 1;
+    }
   </style>
 </head>
 
 <body>
-  <!-- ONLY CHANGE #1 + #2: Add header bar + use carhartt-logo.png -->
+  <!-- UPDATED HEADER to match your latest index.txt menu -->
   <header class="topbar">
     <div class="brand">
       <a href="index.html" aria-label="Home">
-        <img class="brand-logo" src="carhartt-logo.png" alt="carhartt" />
+        <img class="brand-logo" src="carhartt-logo.png" alt="Carhartt" />
       </a>
     </div>
 
     <nav class="menu">
-      <a href="#">NEW</a>
-      <a href="#">FEATURED</a>
-      <a href="#">MEN</a>
-      <a href="#">WOMEN</a>
-      <a href="#">KIDS</a>
-      <a href="#">SCRUBS</a>
-      <a href="#">BOOTS</a>
-      <a href="#">ACCESSORIES</a>
-      <a href="#">SALE</a>
-      <a href="#">LEARN</a>
-      <a id="scan-link" class="scan-link" href="#">SCAN BARCODE</a>
+      <a href="#">New</a>
+      <a href="#">Featured</a>
+      <a href="#">Men</a>
+      <a href="#">Women</a>
+      <a href="#">Kids</a>
+      <a href="#">Scrubs</a>
+      <a href="#">Boots</a>
+      <a href="#">Accesories</a>
+      <a href="#">Sale</a>
+      <a href="#">Learn</a>
+
+      <span class="menu-sep" aria-hidden="true">|</span>
+      <a href="index.html">My Product</a>
     </nav>
   </header>
 
-  <!-- ORIGINAL PAGE CONTENT (left as-is, just wrapped in normal HTML structure) -->
+  <!-- ORIGINAL PAGE CONTENT (left as-is) -->
   <main style="max-width: 960px; margin: 0 auto; padding: 18px 16px 48px;">
     <p>
       <a href="index.html">carhartt</a>
@@ -72,12 +82,12 @@
     <p><strong>Style:</strong> <span id="style"></span></p>
     <p><strong>Description:</strong> <span id="description"></span></p>
 
-    <!-- These are optional, but helpful if your product-page.js expects them -->
-    <img id="productImage" alt="Product image" style="max-width: 320px; height: auto;" />
-    <div id="pageError" class="hidden"></div>
-    <pre id="recordDump" class="hidden"></pre>
-
     <h1>100615 Product Details</h1>
+
+    <!-- Optional helpers if your product-page.js uses them -->
+    <p id="pageError" class="hidden"></p>
+    <pre id="recordDump" class="hidden"></pre>
   </main>
 </body>
 </html>
+``
