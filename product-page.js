@@ -74,6 +74,7 @@ function populate(record) {
   setText("season", f.Season ?? f.season);
   setText("color", f.Color ?? f.color);
   setText("size", f.Size ?? f.size);
+  setText("fit", f.Fit ?? f.fit);
 
   const dump = document.getElementById("recordDump");
   if (dump) dump.textContent = JSON.stringify(record, null, 2);
