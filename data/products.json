@@ -13,8 +13,10 @@
       "care": "Machine wash warm with like colors. Non-Chlorine bleach when needed. Tumble dry medium, remove promptly",
       "coo": "Pakistan",
       "po": "3510051489",
-      "style": "K87 Brown Regular Large",
-      "description": "Relaxed Fit Pocket Tee",
+      "style": "K87",
+      "size": "Large",
+      "color": "Brown",
+      "description": "Relaxed fit Pocket Tee",
       "vendor": "NFK EXPORTS",
       "season": "Spring 2025"
     }
@@ -31,7 +33,9 @@
       "care": "Machine wash cold gentle cycle with mild detergent. Do not bleach. Tumble dry low remove promptly. Do not iron. Do not dry clean.",
       "coo": "Vietnam",
       "po": "3510042476",
-      "style": "100615 Black Regular Large",
+      "style": "100615",
+      "size": "Large",
+      "color": "Black",
       "description": "Paxton Sweatshirt",
       "vendor": "HANSAE TG",
       "season": "Fall 2024"
@@ -50,6 +54,8 @@
       "coo": "Mexico",
       "po": "3510042478",
       "style": "100615 Black Regular Large",
+      "size": "Large",
+      "color": "Black",
       "description": "Paxton Sweatshirt",
       "vendor": "MEXMODE",
       "season": "Spring 2025"
